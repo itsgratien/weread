@@ -11,3 +11,9 @@ web-build/
 
 # macOS
 .DS_Store
+
+#yarn.lock
+yarn.lock
+
+#gitignore
+.gitignore
