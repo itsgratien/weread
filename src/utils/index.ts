@@ -1,4 +1,5 @@
 import { Routes } from './routes';
+import { FirebaseCollectionReference } from './firebase';
 
-export { Routes };
+export { Routes, FirebaseCollectionReference };
 export * from './fonts';

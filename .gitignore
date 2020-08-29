@@ -17,3 +17,6 @@ yarn.lock
 
 #gitignore
 .gitignore
+
+#firebase setup
+src/utils/firebase.config.ts

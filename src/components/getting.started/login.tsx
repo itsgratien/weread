@@ -9,7 +9,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { Routes, fontFamily, fonts } from '../../utils';
 import { Formik } from 'formik';
-import { loginSchema } from '../../repos';
+import { loginSchema, signin } from '../../repos';
 import { useFonts } from 'expo-font';
 
 const Login: FC = () => {
@@ -25,9 +25,16 @@ const Login: FC = () => {
       <Formik
         initialValues={{ email: '', password: '' }}
         validationSchema={loginSchema}
-        onSubmit={() => {
-          alert('yes man');
+        onSubmit={(values) => {
+          signin(values, (response) => {
+            if (response) {
+              navigation.navigate(Routes.ViewAllBooks);
+            } else {
+              alert('failed');
+            }
+          });
         }}
+        validateOnBlur
       >
         {({ handleChange, values, handleSubmit, errors }) => {
           const { email, password } = values;
@@ -50,17 +57,24 @@ const Login: FC = () => {
                   onChangeText={handleChange('password')}
                   value={password}
                   style={Styles.inputText}
+                  secureTextEntry
                 />
                 {errors && errors.email && (
                   <Text style={Styles.inputError}>{errors.password}</Text>
                 )}
               </View>
 
-              <View style={Styles.inputButton}>
-                <TouchableOpacity onPress={() => handleSubmit()}>
+              <TouchableOpacity
+                onPress={(event) => {
+                  if (Object.keys(errors).length === 0) {
+                    return handleSubmit();
+                  }
+                }}
+              >
+                <View style={Styles.inputButton}>
                   <Text style={Styles.buttonText}>Signin</Text>
-                </TouchableOpacity>
-              </View>
+                </View>
+              </TouchableOpacity>
             </View>
           );
         }}
