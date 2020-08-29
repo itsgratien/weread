@@ -2,8 +2,8 @@ import React from 'react';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { GettingStarted, Login } from './components';
-import { Routes } from './utils';
+import { GettingStarted, Login } from './src/components';
+import { Routes } from './src/utils';
 const Stack = createStackNavigator();
 
 const App = () => {

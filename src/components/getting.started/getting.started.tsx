@@ -23,11 +23,7 @@ const GettingStarted: FC = () => {
         >
           <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.getStarted}
-          onPress={() => navigation.navigate(Routes.Home)}
-          activeOpacity={1}
-        >
+        <TouchableOpacity style={styles.getStarted} activeOpacity={1}>
           <Text style={styles.getStartedText}>Get Started</Text>
         </TouchableOpacity>
       </View>
@@ -47,12 +43,12 @@ export const styles = StyleSheet.create({
   },
   appName: {
     fontSize: 40,
-    fontFamily: fontFamily.balloTammaExtraBold
+    fontFamily: fontFamily.balloTammaExtraBold,
   },
   slogan: {
     fontSize: 15,
     textTransform: 'capitalize',
-    fontFamily: fontFamily.balloTammaBold
+    fontFamily: fontFamily.balloTammaBold,
   },
   getStarted: {
     textTransform: 'capitalize',
@@ -69,7 +65,7 @@ export const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     textTransform: 'capitalize',
-    fontFamily: fontFamily.balloTammaBold
+    fontFamily: fontFamily.balloTammaBold,
   },
   actions: {
     flex: 1,
@@ -99,7 +95,7 @@ export const styles = StyleSheet.create({
     color: '#000',
     textAlign: 'center',
     textTransform: 'capitalize',
-    fontFamily: fontFamily.balloTammaBold
+    fontFamily: fontFamily.balloTammaBold,
   },
 });
 export default GettingStarted;
