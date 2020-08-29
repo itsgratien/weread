@@ -1,2 +1,4 @@
 import GettingStarted from './getting.started';
-export { GettingStarted };
+import Login from './login';
+
+export { GettingStarted, Login };

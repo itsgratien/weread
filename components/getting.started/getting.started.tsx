@@ -1,38 +1,34 @@
-import React, { useState, useEffect, FC } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { CustomText } from '../layouts';
+import React, { FC } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
+import { Routes, fonts, fontFamily } from '../../utils';
+import { useFonts } from 'expo-font';
 const GettingStarted: FC = () => {
   const navigation = useNavigation();
+  const [loadingFont] = useFonts(fonts);
+  if (!loadingFont) {
+    return null;
+  }
   return (
     <View style={styles.container}>
       <View style={styles.appIntro}>
-        <CustomText style={styles.appName} fontWeight='extraBold'>
-          weread
-        </CustomText>
-        <CustomText style={styles.slogan} fontWeight='regular'>
-          a place we share and read book
-        </CustomText>
+        <Text style={styles.appName}>weread</Text>
+        <Text style={styles.slogan}>a place we share and read book</Text>
       </View>
       <View style={styles.actions}>
         <TouchableOpacity
           style={styles.loginBtn}
-          onPress={() => navigation.navigate('Login')}
+          onPress={() => navigation.navigate(Routes.Login)}
           activeOpacity={1}
         >
-          <CustomText fontWeight='regular' style={styles.loginText}>
-            Login
-          </CustomText>
+          <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.getStarted}
-          onPress={() => navigation.navigate('Login')}
+          onPress={() => navigation.navigate(Routes.Home)}
           activeOpacity={1}
         >
-          <CustomText fontWeight='regular' style={styles.getStartedText}>
-            Get Started
-          </CustomText>
+          <Text style={styles.getStartedText}>Get Started</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -42,7 +38,7 @@ const GettingStarted: FC = () => {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
   },
   appIntro: {
     justifyContent: 'center',
@@ -51,10 +47,12 @@ export const styles = StyleSheet.create({
   },
   appName: {
     fontSize: 40,
+    fontFamily: fontFamily.balloTammaExtraBold
   },
   slogan: {
     fontSize: 15,
     textTransform: 'capitalize',
+    fontFamily: fontFamily.balloTammaBold
   },
   getStarted: {
     textTransform: 'capitalize',
@@ -71,6 +69,7 @@ export const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     textTransform: 'capitalize',
+    fontFamily: fontFamily.balloTammaBold
   },
   actions: {
     flex: 1,
@@ -78,7 +77,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loginBtn: {
-    textTransform: 'capitalize',
     borderRadius: 20,
     width: 250,
     marginTop: 10,
@@ -94,13 +92,14 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.58,
     shadowRadius: 16.0,
 
-    elevation: 24,
+    elevation: 20,
   },
   loginText: {
     fontSize: 15,
     color: '#000',
     textAlign: 'center',
     textTransform: 'capitalize',
+    fontFamily: fontFamily.balloTammaBold
   },
 });
 export default GettingStarted;
