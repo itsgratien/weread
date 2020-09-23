@@ -20,3 +20,9 @@ yarn.lock
 
 #firebase setup
 src/utils/firebase.config.ts
+
+#yarn error
+yarn-error.log
+
+#vscode
+.vscode
