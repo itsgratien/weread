@@ -8,8 +8,7 @@ export enum AuthTypes {
 
 export const welcome = () => action(AuthTypes.Welcome);
 
-export const setMessage = (message: string) =>
-  action(AuthTypes.SetMessage, { message });
+export const setMessage = (message: string) => action(AuthTypes.SetMessage, { message });
 
 const authActions = {
   welcome,
