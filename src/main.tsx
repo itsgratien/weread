@@ -7,11 +7,14 @@ import * as eva from '@eva-design/eva';
 import { ApplicationProvider, Button } from '@ui-kitten/components';
 import { default as theme } from '../theme.json';
 import { welcome, RootState } from './redux';
+import { Routes } from './utils';
+import { Login } from './screens';
+
 interface Props {
   welcome: typeof welcome;
   message?: string;
 }
-const Stack = createStackNavigator();
+const { Navigator, Screen } = createStackNavigator();
 
 const Main: FC<Props> = (props) => {
   const { message, welcome } = props;
@@ -22,7 +25,15 @@ const Main: FC<Props> = (props) => {
 
   return (
     <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
-      <Button>Welcome</Button>
+      <NavigationContainer>
+        <Navigator initialRouteName={Routes.Login}>
+          <Screen
+            name={Routes.Login}
+            component={Login}
+            options={{ headerShown: false }}
+          />
+        </Navigator>
+      </NavigationContainer>
     </ApplicationProvider>
   );
 };
