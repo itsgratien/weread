@@ -1,6 +1,6 @@
-import * as firebase from 'firebase';
+import { firestore } from 'firebase';
+import 'firebase/firestore';
 
-const { firestore } = firebase;
 export enum firebaseCollection {
   users = 'users',
   books = 'books',

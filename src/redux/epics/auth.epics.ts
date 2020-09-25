@@ -1,10 +1,10 @@
 import { RootEpic } from '.';
 import { AuthTypes, setMessage, setError } from '..';
 import { map, filter, switchMap, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { of, from } from 'rxjs';
 import { isOfType } from 'typesafe-actions';
-
-import { signInWithGoogle } from '../../repos';
+import AsyncStorage from '@react-native-community/async-storage';
+import { signInWithGoogle, Storage } from '../../repos';
 
 export const welcomeEpic: RootEpic = ($action) => {
   return $action.pipe(
@@ -19,9 +19,11 @@ export const loginWithGoogleEpic: RootEpic = ($action) => {
     switchMap((action) => {
       const { accessToken } = action.payload;
       return signInWithGoogle(accessToken).pipe(
-        map((res) => {
-          console.log(res);
-          return setMessage('logged in');
+        switchMap((res) => {
+          console.log('res', res);
+          return from(AsyncStorage.setItem(Storage.Email, res as string)).pipe(
+            map(() => setMessage('logged'))
+          );
         }),
         catchError((error) => {
           console.log(error);
