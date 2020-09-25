@@ -1,4 +1,5 @@
 import { Routes } from './routes';
-import { FirebaseCollectionReference } from './firebase';
+import { FirebaseCollectionReference, firebaseConfig } from './firebase';
+import Config from './config';
 
-export { Routes, FirebaseCollectionReference };
+export { Routes, FirebaseCollectionReference, Config, firebaseConfig };

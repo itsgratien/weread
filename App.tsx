@@ -1,10 +1,12 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import 'react-native-gesture-handler';
 import { Provider } from 'react-redux';
 import { store } from './src/redux/store';
 import Main from './src/main';
 import { useFonts } from 'expo-font';
 import { tomorrowFonts } from './src/assets';
+import { firebaseConfig } from './src/utils';
+import * as firebase from 'firebase';
 
 const App: FC = () => {
   const [fontsLoaded] = useFonts({
@@ -14,6 +16,11 @@ const App: FC = () => {
     'Tomorrow-SemiBold': tomorrowFonts.semiBold,
     'Tomorrow-ExtraBold': tomorrowFonts.extraBold,
   });
+  
+
+  useEffect(() => {
+    firebase.initializeApp(firebaseConfig);
+  }, []);
 
   if (!fontsLoaded) {
     return <></>;

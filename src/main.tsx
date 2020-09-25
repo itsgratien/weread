@@ -8,7 +8,7 @@ import { ApplicationProvider, Button } from '@ui-kitten/components';
 import { default as theme } from '../theme.json';
 import { welcome, RootState } from './redux';
 import { Routes } from './utils';
-import { Login } from './screens';
+import { SocialAuth } from './screens';
 
 interface Props {
   welcome: typeof welcome;
@@ -26,10 +26,10 @@ const Main: FC<Props> = (props) => {
   return (
     <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
       <NavigationContainer>
-        <Navigator initialRouteName={Routes.Login}>
+        <Navigator initialRouteName={Routes.SocialAuth}>
           <Screen
-            name={Routes.Login}
-            component={Login}
+            name={Routes.SocialAuth}
+            component={SocialAuth}
             options={{ headerShown: false }}
           />
         </Navigator>

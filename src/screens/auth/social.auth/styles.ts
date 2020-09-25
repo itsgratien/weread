@@ -7,9 +7,10 @@ export const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: Colors.white,
+    justifyContent: 'center',
   },
   logoView: {
-    marginTop: 100,
+    marginTop: 0,
   },
   logo: {
     resizeMode: 'contain',

@@ -1,5 +1,5 @@
 export const Routes = {
   Home: 'Home',
-  Login: 'Login',
+  SocialAuth: 'SocialAuth',
   ViewAllBooks: 'ViewAllBooks'
 };
