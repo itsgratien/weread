@@ -22,6 +22,7 @@ export const authReducer = (state = initialState, action: AuthAction) => {
         break;
 
       case AuthTypes.LoginWithGoogle:
+      case AuthTypes.Logout:
         draft.loading = true;
         break;
 
@@ -30,7 +31,7 @@ export const authReducer = (state = initialState, action: AuthAction) => {
         draft.message = action.payload.message;
         draft.loading = false;
         break;
-      
+
       default:
         return draft;
     }

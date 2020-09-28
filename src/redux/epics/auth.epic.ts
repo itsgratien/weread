@@ -38,3 +38,15 @@ export const loginWithGoogleEpic: RootEpic = ($action) => {
     })
   );
 };
+
+export const logoutEpic: RootEpic = ($action) => {
+  return $action.pipe(
+    filter(isOfType(AuthTypes.Logout)),
+    switchMap(() => {
+      return from(AsyncStorage.removeItem(Storage.AccessToken)).pipe(
+        map(() => setAuthentication('Logged Out', false))
+      );
+    }),
+    catchError(() => of(setError('Something Wrong. Try again')))
+  );
+};
