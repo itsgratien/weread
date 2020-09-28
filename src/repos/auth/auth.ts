@@ -21,6 +21,11 @@ export interface User {
   avatar?: string;
 }
 
+export interface VerifyAuthentication{
+  message?: string;
+  isAuthenticated: boolean;
+}
+
 export const signInWithGoogle = (accessToken: string) => {
   return new Observable((observer) => {
     const credential = firebase.auth.GoogleAuthProvider.credential(

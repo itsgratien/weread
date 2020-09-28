@@ -1,4 +1,5 @@
 import { action, ActionType } from 'typesafe-actions';
+import { VerifyAuthentication } from '../../repos';
 
 export enum AuthTypes {
   Welcome = 'AuthTypes/Welcome',
@@ -8,6 +9,7 @@ export enum AuthTypes {
   SetError = 'AuthTypes/SetError',
   SetAuthentication = 'AuthTypes/SetAuthentication',
   Logout = 'AuthTypes/Logout',
+  VerifyAuthentication = 'AuthTypes/VerifyAuthentication',
 }
 
 export const welcome = () => action(AuthTypes.Welcome);
@@ -21,10 +23,16 @@ export const setError = (message: string) =>
 export const loginWithGoogle = (accessToken: string) =>
   action(AuthTypes.LoginWithGoogle, { accessToken });
 
-export const setAuthentication = (message: string, isAuthenticated: boolean) =>
+export const setAuthentication = ({
+  message,
+  isAuthenticated,
+}: VerifyAuthentication) =>
   action(AuthTypes.SetAuthentication, { message, isAuthenticated });
 
 export const logout = () => action(AuthTypes.Logout);
+
+export const verifyAuthentication = () =>
+  action(AuthTypes.VerifyAuthentication);
 
 const authActions = {
   welcome,
@@ -33,6 +41,7 @@ const authActions = {
   setError,
   setAuthentication,
   logout,
+  verifyAuthentication,
 };
 
 export type AuthAction = ActionType<typeof authActions>;

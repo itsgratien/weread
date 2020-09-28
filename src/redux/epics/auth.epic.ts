@@ -25,7 +25,12 @@ export const loginWithGoogleEpic: RootEpic = ($action) => {
               return from(
                 AsyncStorage.setItem(Storage.AccessToken, accessToken)
               ).pipe(
-                map(() => setAuthentication('Logged in successfully', true))
+                map(() =>
+                  setAuthentication({
+                    message: 'Logged in successfully',
+                    isAuthenticated: true,
+                  })
+                )
               );
             })
           );
@@ -44,9 +49,23 @@ export const logoutEpic: RootEpic = ($action) => {
     filter(isOfType(AuthTypes.Logout)),
     switchMap(() => {
       return from(AsyncStorage.removeItem(Storage.AccessToken)).pipe(
-        map(() => setAuthentication('Logged Out', false))
+        map(() =>
+          setAuthentication({ message: 'Logged out', isAuthenticated: false })
+        )
       );
     }),
     catchError(() => of(setError('Something Wrong. Try again')))
+  );
+};
+
+export const verifyAuthenticationEpic: RootEpic = ($action) => {
+  return $action.pipe(
+    filter(isOfType(AuthTypes.VerifyAuthentication)),
+    switchMap(() => {
+      return from(AsyncStorage.getItem(Storage.AccessToken)).pipe(
+        map(() => setAuthentication({ isAuthenticated: true }))
+      );
+    }),
+    catchError(() => of(setAuthentication({ isAuthenticated: false })))
   );
 };

@@ -1,6 +1,6 @@
 {
     "root": true,
-    "extends": "@react-native-community",
+    "extends": "universe/native",
     "parser": "@typescript-eslint/parser",
     "plugins": ["@typescript-eslint"],
     "rules": {

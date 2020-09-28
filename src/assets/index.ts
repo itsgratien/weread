@@ -1,5 +1,6 @@
 
 export const logoBlack = require( './images/wereadBlackLogo.png');
+export const arrowBack = require('./images/arrow-back.png');
 
 export enum tomorrowFonts{
     regular = require('./fonts/Tomorrow-Regular.ttf'),

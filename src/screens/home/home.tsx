@@ -1,12 +1,10 @@
 import React, { FC, useEffect } from 'react';
 import { Text, Button } from '@ui-kitten/components';
-import { SafeAreaView } from 'react-native';
-import { styles } from './styles';
 import { useNavigation } from '@react-navigation/native';
 import { RootState, logout } from '../../redux';
 import { connect } from 'react-redux';
 import { Routes } from '../../utils/routes';
-import { Loading } from '../../components';
+import { Loading, Layout } from '../../components';
 
 interface Props {
   isAuthenticated?: boolean;
@@ -27,12 +25,12 @@ const Home: FC<Props> = (props) => {
   if (loading) {
     return <Loading />;
   }
-  
+
   return (
-    <SafeAreaView key='base' style={styles.container}>
+    <Layout>
       <Text>Welcome home</Text>
       <Button onPress={() => logout()}>Logout</Button>
-    </SafeAreaView>
+    </Layout>
   );
 };
 
