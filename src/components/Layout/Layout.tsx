@@ -1,9 +1,13 @@
 import React, { FC } from 'react';
 import { SafeAreaView, View, TouchableOpacity } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from './styles';
 import { Routes } from '../../utils';
+import { Home, AddBook } from '../../screens';
+
+const Tab = createBottomTabNavigator();
 
 export const Layout: FC = (props) => {
   const { navigate } = useNavigation();
@@ -12,6 +16,10 @@ export const Layout: FC = (props) => {
       {props.children}
       <View style={styles.bottomView}>
         <View style={styles.bottomMenuContainer}>
+          {/* <Tab.Navigator initialRouteName={Routes.Home}>
+            <Tab.Screen name={Routes.Home} component={Home}></Tab.Screen>
+            <Tab.Screen name={Routes.AddBook} component={AddBook}></Tab.Screen>
+          </Tab.Navigator> */}
           <TouchableOpacity onPress={() => navigate(Routes.Home)}>
             <Ionicons name='md-home' size={40} />
           </TouchableOpacity>

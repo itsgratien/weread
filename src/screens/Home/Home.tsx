@@ -3,7 +3,7 @@ import { Text, Button } from '@ui-kitten/components';
 import { useNavigation } from '@react-navigation/native';
 import { RootState, logout } from '../../redux';
 import { connect } from 'react-redux';
-import { Routes } from '../../utils/routes';
+import { Routes } from '../../utils/Routes';
 import { Loading, Layout } from '../../components';
 
 interface Props {

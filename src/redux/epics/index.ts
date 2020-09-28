@@ -5,7 +5,7 @@ import {
   loginWithGoogleEpic,
   logoutEpic,
   verifyAuthenticationEpic,
-} from './auth.epic';
+} from './AuthEpic';
 
 export default combineEpics(
   welcomeEpic,

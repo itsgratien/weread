@@ -1,5 +1,5 @@
-import { Routes } from './routes';
-import { FireStoreCollections, firebaseConfig } from './firebase';
-import Config from './config';
+import { Routes } from './Routes';
+import { FireStoreCollections, firebaseConfig } from './Firebase';
+import Config from './Config';
 
 export { Routes, FireStoreCollections, Config, firebaseConfig };

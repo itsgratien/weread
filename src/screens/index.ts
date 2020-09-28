@@ -1,3 +1,3 @@
-export * from './auth';
-export * from './home';
-export * from './book';
+export * from './Auth';
+export * from './Home';
+export * from './Book';

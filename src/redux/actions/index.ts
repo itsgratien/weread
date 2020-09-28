@@ -1,5 +1,5 @@
-import { AuthAction} from './auth.action';
+import { AuthAction} from './AuthAction';
 
-export * from './auth.action';
+export * from './AuthAction';
 
 export type RootAction = AuthAction;

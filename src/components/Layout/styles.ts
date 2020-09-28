@@ -10,10 +10,10 @@ export const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: 'white',
     width: '100%',
-    marginTop: 'auto',
     paddingLeft: 5,
     paddingRight: 5,
     zIndex: 100,
+    position: 'absolute',
   },
   bottomMenuContainer: {
     flexDirection: 'row',
@@ -29,5 +29,5 @@ export const styles = StyleSheet.create({
     paddingRight: 20,
     paddingLeft: 20,
     marginBottom: 10,
-  }
+  },
 });
