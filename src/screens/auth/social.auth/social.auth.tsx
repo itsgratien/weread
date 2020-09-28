@@ -1,5 +1,11 @@
-import React, { FC, useState, useEffect } from 'react';
-import { SafeAreaView, Image, View, TouchableOpacity } from 'react-native';
+import React, { FC } from 'react';
+import {
+  SafeAreaView,
+  Image,
+  View,
+  TouchableOpacity,
+  YellowBox,
+} from 'react-native';
 import { Text, Button } from '@ui-kitten/components';
 import { styles } from './styles';
 import { logoBlack } from '../../../assets';
@@ -7,15 +13,18 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Google from 'expo-google-app-auth';
 import { Config } from '../../../utils';
 import { connect } from 'react-redux';
-import { loginWithGoogle, setError } from '../../../redux';
+import { loginWithGoogle, setError, RootState } from '../../../redux';
+import { Loading } from '../../../components';
+YellowBox.ignoreWarnings(['Setting a timer']);
 
 interface Props {
   loginWithGoogle: typeof loginWithGoogle;
   setError: typeof setError;
+  loading?: boolean;
 }
 
 const SocialAuth: FC<Props> = (props) => {
-  const { loginWithGoogle, setError } = props;
+  const { loginWithGoogle, setError, loading } = props;
 
   const signIn = async () => {
     try {
@@ -30,6 +39,11 @@ const SocialAuth: FC<Props> = (props) => {
       return setError('Something went wrong. Try again');
     }
   };
+
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.logoView}>
@@ -62,4 +76,12 @@ const SocialAuth: FC<Props> = (props) => {
   );
 };
 
-export default connect(null, { loginWithGoogle, setError })(SocialAuth);
+const mapStateToProps = (state: RootState) => {
+  const { loading } = state.Auth;
+
+  return { loading };
+};
+
+export default connect(mapStateToProps, { loginWithGoogle, setError })(
+  SocialAuth
+);

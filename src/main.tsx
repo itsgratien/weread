@@ -4,20 +4,21 @@ import { connect } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider, Button } from '@ui-kitten/components';
+import { ApplicationProvider } from '@ui-kitten/components';
 import { default as theme } from '../theme.json';
 import { welcome, RootState } from './redux';
 import { Routes } from './utils';
-import { SocialAuth } from './screens';
+import { SocialAuth, Home } from './screens';
 
 interface Props {
   welcome: typeof welcome;
   message?: string;
+  isAuthenticated?: boolean;
 }
 const { Navigator, Screen } = createStackNavigator();
 
 const Main: FC<Props> = (props) => {
-  const { message, welcome } = props;
+  const { welcome, isAuthenticated } = props;
 
   useEffect(() => {
     welcome();
@@ -27,11 +28,23 @@ const Main: FC<Props> = (props) => {
     <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
       <NavigationContainer>
         <Navigator initialRouteName={Routes.SocialAuth}>
-          <Screen
-            name={Routes.SocialAuth}
-            component={SocialAuth}
-            options={{ headerShown: false }}
-          />
+          {isAuthenticated ? (
+            <>
+              <Screen
+                name={Routes.Home}
+                component={Home}
+                options={{ headerShown: false }}
+              />
+            </>
+          ) : (
+            <>
+              <Screen
+                name={Routes.SocialAuth}
+                component={SocialAuth}
+                options={{ headerShown: false }}
+              />
+            </>
+          )}
         </Navigator>
       </NavigationContainer>
     </ApplicationProvider>
@@ -39,8 +52,8 @@ const Main: FC<Props> = (props) => {
 };
 
 const mapStateToProps = (state: RootState) => {
-  const { message } = state.Auth;
-  return { message };
+  const { message, isAuthenticated } = state.Auth;
+  return { message, isAuthenticated };
 };
 
 export default connect(mapStateToProps, { welcome })(Main);

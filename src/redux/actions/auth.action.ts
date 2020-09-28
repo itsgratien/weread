@@ -6,6 +6,7 @@ export enum AuthTypes {
   Loading = 'AuthTypes/Loading',
   LoginWithGoogle = 'AuthTypes/LoginWithGoogle',
   SetError = 'AuthTypes/SetError',
+  SetAuthentication = 'AuthTypes/SetAuthentication'
 }
 
 export const welcome = () => action(AuthTypes.Welcome);
@@ -16,11 +17,14 @@ export const setError = (message: string) => action(AuthTypes.SetError, { messag
 
 export const loginWithGoogle = (accessToken: string) => action(AuthTypes.LoginWithGoogle, { accessToken });
 
+export const setAuthentication = (message: string, isAuthenticated: boolean) => action(AuthTypes.SetAuthentication, { message, isAuthenticated });
+
 const authActions = {
   welcome,
   setMessage,
   loginWithGoogle,
   setError,
+  setAuthentication,
 };
 
 export type AuthAction = ActionType<typeof authActions>;

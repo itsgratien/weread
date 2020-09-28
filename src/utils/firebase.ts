@@ -17,7 +17,7 @@ export const firebaseConfig = {
   appId: '1:416068594531:web:df0acd574ca7c14e07c156',
 };
 
-export const FirebaseCollectionReference = {
+export const FireStoreCollections = {
   users: () => firestore().collection(firebaseCollection.users),
   books: () => firestore().collection(firebaseCollection.books),
   categories: () => firestore().collection(firebaseCollection.categories),

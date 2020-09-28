@@ -1,1 +1,1 @@
-console.log('components');
+export * from './loading';

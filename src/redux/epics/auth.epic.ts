@@ -1,5 +1,5 @@
 import { RootEpic } from '.';
-import { AuthTypes, setMessage, setError } from '..';
+import { AuthTypes, setMessage, setError, setAuthentication } from '..';
 import { map, filter, switchMap, catchError } from 'rxjs/operators';
 import { of, from } from 'rxjs';
 import { isOfType } from 'typesafe-actions';
@@ -20,9 +20,14 @@ export const loginWithGoogleEpic: RootEpic = ($action) => {
       const { accessToken } = action.payload;
       return signInWithGoogle(accessToken).pipe(
         switchMap((res) => {
-          console.log('res', res);
           return from(AsyncStorage.setItem(Storage.Email, res as string)).pipe(
-            map(() => setMessage('logged'))
+            switchMap(() => {
+              return from(
+                AsyncStorage.setItem(Storage.AccessToken, accessToken)
+              ).pipe(
+                map(() => setAuthentication('Logged in successfully', true))
+              );
+            })
           );
         }),
         catchError((error) => {

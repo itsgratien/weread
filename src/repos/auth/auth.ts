@@ -1,4 +1,4 @@
-import { FirebaseCollectionReference } from '../../utils';
+import { FireStoreCollections } from '../../utils';
 import firebase from 'firebase';
 import { Observable } from 'rxjs';
 
@@ -10,6 +10,7 @@ export enum Roles {
 
 export enum Storage {
   Email = 'Email',
+  AccessToken = 'AccessToken'
 }
 export interface User {
   id: string;
@@ -31,29 +32,29 @@ export const signInWithGoogle = (accessToken: string) => {
       .signInWithCredential(credential)
       .then((res) => {
         if (res.user) {
-          const { email, displayName, photoURL } = res.user;
-          return FirebaseCollectionReference.users()
-            .where('email', '==', email)
-            .get()
-            .then((user) => {
-              if (user.empty) {
-                return FirebaseCollectionReference.users()
-                  .add({
-                    ...res.user,
-                    email,
-                    username: displayName,
-                    avatar: photoURL,
-                    role: [Roles.Client],
-                  })
-                  .then(() => observer.next(email));
-              } else {
-                observer.next(email);
-              }
+          const { email, displayName, photoURL, uid } = res.user;
+          FireStoreCollections.users()
+            .doc(uid)
+            .set(
+              {
+                email,
+                username: displayName,
+                profilePicture: photoURL,
+                role: [Roles.Client],
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+              },
+              { merge: true }
+            )
+            .then(() => {
+              observer.next(email);
+            })
+            .catch(() => {
+              observer.error('Something went wrong. Try again');
             });
         }
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
         observer.error('Something went wrong. Try again');
       });
   });

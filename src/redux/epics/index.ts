@@ -1,6 +1,6 @@
 import { Epic, combineEpics } from 'redux-observable';
 import { RootState, RootAction } from '..';
-import { welcomeEpic, loginWithGoogleEpic } from './auth.epics';
+import { welcomeEpic, loginWithGoogleEpic } from './auth.epic';
 
 export default combineEpics(welcomeEpic, loginWithGoogleEpic);
 
