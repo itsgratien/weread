@@ -9,13 +9,18 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ScrollView,
-  SafeAreaView,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { styles } from './styles';
 import { Ionicons } from '@expo/vector-icons';
-interface Props {}
+import { Colors } from '../../../theme';
+import { Routes } from '../../../utils';
 
-const AddBook = () => {
+interface Props {
+  imageUrl?: string;
+}
+
+const AddBook: FC<Props> = () => {
   const [title = '', setTitle] = useState<string>();
 
   const [category, setCategory] = useState<string>();
@@ -23,6 +28,8 @@ const AddBook = () => {
   const [audio, setAudio] = useState<string>();
 
   const [pdf, setPdf] = useState<string>();
+
+  const navigation = useNavigation();
 
   return (
     <Layout>
@@ -47,10 +54,17 @@ const AddBook = () => {
                   style={styles.input}
                   textStyle={styles.textInput}
                   accessoryRight={() => (
-                    <TouchableOpacity>
-                      <Ionicons size={40} name='ios-add-circle-outline' />
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate(Routes.ImageUpload)}
+                    >
+                      <Ionicons
+                        size={40}
+                        name='ios-add-circle-outline'
+                        color={Colors.rgbBlack}
+                      />
                     </TouchableOpacity>
                   )}
+                  disabled={true}
                 />
               </View>
               <View style={styles.inputView}>
@@ -60,9 +74,14 @@ const AddBook = () => {
                   textStyle={styles.textInput}
                   accessoryRight={() => (
                     <TouchableOpacity>
-                      <Ionicons size={40} name='ios-add-circle-outline' />
+                      <Ionicons
+                        size={40}
+                        name='ios-add-circle-outline'
+                        color={Colors.rgbBlack}
+                      />
                     </TouchableOpacity>
                   )}
+                  disabled={true}
                 />
               </View>
               <View style={styles.inputView}>
@@ -72,9 +91,14 @@ const AddBook = () => {
                   textStyle={styles.textInput}
                   accessoryRight={() => (
                     <TouchableOpacity>
-                      <Ionicons size={40} name='ios-add-circle-outline' />
+                      <Ionicons
+                        size={40}
+                        name='ios-add-circle-outline'
+                        color={Colors.rgbBlack}
+                      />
                     </TouchableOpacity>
                   )}
+                  disabled={true}
                 />
               </View>
               <Button style={styles.saveBtn}>

@@ -3,4 +3,5 @@ export const Routes = {
   SocialAuth: 'SocialAuth',
   ViewAllBooks: 'ViewAllBooks',
   AddBook: 'AddBook',
+  ImageUpload: 'ImageUpload'
 };

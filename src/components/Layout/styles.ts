@@ -7,13 +7,10 @@ export const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   bottomView: {
-    bottom: 0,
     backgroundColor: 'white',
     width: '100%',
-    paddingLeft: 5,
-    paddingRight: 5,
     zIndex: 100,
-    position: 'absolute',
+    marginTop: 'auto',
   },
   bottomMenuContainer: {
     flexDirection: 'row',

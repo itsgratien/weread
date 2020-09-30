@@ -9,6 +9,7 @@ import { default as theme } from '../theme.json';
 import { welcome, RootState } from './redux';
 import { Routes } from './utils';
 import { SocialAuth, Home, AddBook } from './screens';
+import { ImageUpload } from './components';
 import { styles } from './styles';
 import { Image } from 'react-native';
 import { arrowBack } from './assets';
@@ -42,6 +43,16 @@ const Main: FC<Props> = (props) => {
                 component={AddBook}
                 options={{
                   title: 'New book',
+                  headerTitleStyle: styles.headerTitle,
+                  headerBackImage: () => <Image source={arrowBack} />,
+                  headerStyle: styles.headerStyle,
+                }}
+              />
+              <Screen
+                name={Routes.ImageUpload}
+                component={ImageUpload}
+                options={{
+                  title: 'Cover Upload',
                   headerTitleStyle: styles.headerTitle,
                   headerBackImage: () => <Image source={arrowBack} />,
                   headerStyle: styles.headerStyle,
