@@ -6,7 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider } from '@ui-kitten/components';
 import { default as theme } from '../theme.json';
-import { welcome, RootState } from './redux';
+import { welcome, RootState, verifyAuthentication } from './redux';
 import { Routes } from './utils';
 import { SocialAuth, Home, AddBook } from './screens';
 import { ImageUpload } from './components';
@@ -17,15 +17,18 @@ interface Props {
   welcome: typeof welcome;
   message?: string;
   isAuthenticated?: boolean;
+  verifyAuthentication: typeof verifyAuthentication;
 }
+
 const { Navigator, Screen } = createStackNavigator();
 
 const Main: FC<Props> = (props) => {
-  const { welcome, isAuthenticated } = props;
+  const { welcome, isAuthenticated, verifyAuthentication } = props;
 
   useEffect(() => {
     welcome();
-  }, []);
+    verifyAuthentication();
+  }, [verifyAuthentication, welcome]);
 
   return (
     <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
@@ -79,4 +82,6 @@ const mapStateToProps = (state: RootState) => {
   return { message, isAuthenticated };
 };
 
-export default connect(mapStateToProps, { welcome })(Main);
+export default connect(mapStateToProps, { welcome, verifyAuthentication })(
+  Main
+);

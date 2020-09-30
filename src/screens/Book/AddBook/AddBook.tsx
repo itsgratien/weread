@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { Input, Button, Text } from '@ui-kitten/components';
 import { Layout } from '../../../components';
 import {
@@ -10,17 +10,17 @@ import {
   Keyboard,
   ScrollView,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, RouteProp } from '@react-navigation/native';
 import { styles } from './styles';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../../../theme';
-import { Routes } from '../../../utils';
+import { Routes, RootStackParamList } from '../../../utils';
 
 interface Props {
-  imageUrl?: string;
+  routes?: RouteProp<RootStackParamList, 'AddBook'>;
 }
 
-const AddBook: FC<Props> = () => {
+const AddBook: FC<Props> = (props) => {
   const [title = '', setTitle] = useState<string>();
 
   const [category, setCategory] = useState<string>();
@@ -29,7 +29,16 @@ const AddBook: FC<Props> = () => {
 
   const [pdf, setPdf] = useState<string>();
 
+  const { routes } = props;
+
   const navigation = useNavigation();
+
+  useEffect(() => {
+    if (routes && routes.params) {
+      console.log(routes.params);
+      const { audioUrl, imageUrl, pdfUrl } = routes.params;
+    }
+  }, [routes.params]);
 
   return (
     <Layout>
