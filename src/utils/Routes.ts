@@ -7,13 +7,9 @@ export const Routes = {
 };
 
 export type RootStackParamList = {
-  // Home: undefined;
-  // SocialAuth: undefined;
-  // ViewAllBooks: undefined;
   AddBook: {
     imageUrl?: string;
     audioUrl?: string;
     pdfUrl?: string;
   };
-  // ImageUpload: undefined;
 };

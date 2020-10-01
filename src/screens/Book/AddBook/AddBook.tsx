@@ -10,14 +10,19 @@ import {
   Keyboard,
   ScrollView,
 } from 'react-native';
-import { useNavigation, RouteProp } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import { connect } from 'react-redux';
 import { styles } from './styles';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../../../theme';
-import { Routes, RootStackParamList } from '../../../utils';
+import { Routes } from '../../../utils';
+import { RootState } from '../../../redux';
+import { UploadPath } from '../../../repos';
 
 interface Props {
-  routes?: RouteProp<RootStackParamList, 'AddBook'>;
+  coverImage?: UploadPath;
+  audioBook?: UploadPath; 
+  pdfBook?: UploadPath;
 }
 
 const AddBook: FC<Props> = (props) => {
@@ -25,20 +30,9 @@ const AddBook: FC<Props> = (props) => {
 
   const [category, setCategory] = useState<string>();
 
-  const [audio, setAudio] = useState<string>();
-
-  const [pdf, setPdf] = useState<string>();
-
-  const { routes } = props;
+  const { coverImage, pdfBook, audioBook } = props;
 
   const navigation = useNavigation();
-
-  useEffect(() => {
-    if (routes && routes.params) {
-      console.log(routes.params);
-      const { audioUrl, imageUrl, pdfUrl } = routes.params;
-    }
-  }, [routes.params]);
 
   return (
     <Layout>
@@ -68,8 +62,12 @@ const AddBook: FC<Props> = (props) => {
                     >
                       <Ionicons
                         size={40}
-                        name='ios-add-circle-outline'
-                        color={Colors.rgbBlack}
+                        name={
+                          coverImage
+                            ? 'ios-checkmark-circle-outline'
+                            : 'ios-add-circle-outline'
+                        }
+                        color={coverImage ? Colors.primary : Colors.rgbBlack}
                       />
                     </TouchableOpacity>
                   )}
@@ -85,8 +83,12 @@ const AddBook: FC<Props> = (props) => {
                     <TouchableOpacity>
                       <Ionicons
                         size={40}
-                        name='ios-add-circle-outline'
-                        color={Colors.rgbBlack}
+                        name={
+                          audioBook
+                            ? 'ios-checkmark-circle-outline'
+                            : 'ios-add-circle-outline'
+                        }
+                        color={audioBook ? Colors.primary : Colors.rgbBlack}
                       />
                     </TouchableOpacity>
                   )}
@@ -102,8 +104,12 @@ const AddBook: FC<Props> = (props) => {
                     <TouchableOpacity>
                       <Ionicons
                         size={40}
-                        name='ios-add-circle-outline'
-                        color={Colors.rgbBlack}
+                        name={
+                          pdfBook
+                            ? 'ios-checkmark-circle-outline'
+                            : 'ios-add-circle-outline'
+                        }
+                        color={pdfBook ? Colors.primary : Colors.rgbBlack}
                       />
                     </TouchableOpacity>
                   )}
@@ -121,4 +127,8 @@ const AddBook: FC<Props> = (props) => {
   );
 };
 
-export default AddBook;
+const mapStateToProps = (state: RootState) => {
+  const { coverImage, audioBook, pdfBook } = state.Book;
+  return { coverImage, audioBook, pdfBook };
+};
+export default connect(mapStateToProps)(AddBook);

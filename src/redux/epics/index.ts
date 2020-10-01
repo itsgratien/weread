@@ -7,11 +7,22 @@ import {
   verifyAuthenticationEpic,
 } from './AuthEpic';
 
+import {
+  uploadImageEpic,
+  uploadAudioBookEpic,
+  uploadPdfEpic,
+  deleteBookFileEpic,
+} from './BookEpic';
+
 export default combineEpics(
   welcomeEpic,
   loginWithGoogleEpic,
   logoutEpic,
-  verifyAuthenticationEpic
+  verifyAuthenticationEpic,
+  uploadImageEpic,
+  uploadAudioBookEpic,
+  uploadPdfEpic,
+  deleteBookFileEpic,
 );
 
 export type RootEpic = Epic<RootAction, RootAction, RootState>;

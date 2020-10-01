@@ -5,30 +5,51 @@ import { Ionicons } from '@expo/vector-icons';
 import { styles } from './styles';
 
 interface Props {
-  upload: ()=> void;
+  accept: () => void;
+  reject: () => void;
   loading: boolean;
 }
 
 const BottomUploadMenu: FC<Props> = (props) => {
-
-  const { upload, loading } = props;
+  const { accept, loading, reject } = props;
 
   return (
     <SafeAreaView style={styles.bottomView}>
       <View style={styles.bottomContainer}>
-        <TouchableOpacity>
-          <Ionicons name='ios-close-circle-outline' size={40} color='black' />
-        </TouchableOpacity>
         {loading === false ? (
-          <TouchableOpacity onPress={() => upload()}>
-            <Ionicons
-              name='ios-checkmark-circle-outline'
-              size={40}
-              color='black'
-            />
-          </TouchableOpacity>
+          <>
+            <TouchableOpacity onPress={() => reject()}>
+              <Ionicons
+                name='ios-close-circle-outline'
+                size={40}
+                color='black'
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => accept()}>
+              <Ionicons
+                name='ios-checkmark-circle-outline'
+                size={40}
+                color='black'
+              />
+            </TouchableOpacity>
+          </>
         ) : (
-          <Spinner />
+          <>
+            <TouchableOpacity>
+              <Ionicons
+                name='ios-close-circle-outline'
+                size={40}
+                color='#f8f8f8'
+              />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Ionicons
+                name='ios-checkmark-circle-outline'
+                size={40}
+                color='#f8f8f8'
+              />
+            </TouchableOpacity>
+          </>
         )}
       </View>
     </SafeAreaView>

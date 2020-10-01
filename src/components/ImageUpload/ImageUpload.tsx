@@ -1,35 +1,42 @@
-import React, { useState, FC, useCallback, useEffect } from 'react';
+import React, { useState, FC, useCallback } from 'react';
 import { Text, Button } from '@ui-kitten/components';
 import { Image, View, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import {
-  useNavigation,
-  useRoute,
-  CompositeNavigationProp,
-  RouteProp,
-} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { connect } from 'react-redux';
 import { styles } from './styles';
 import { BottomUploadMenu } from '../BottomUploadMenu';
-import { PathReference, uploadFile } from '../../repos';
-import { Routes, RootStackParamList } from '../../utils';
-import { setError } from '../../redux';
+import { PathReference, UploadPath } from '../../repos';
+import {
+  setError,
+  uploadCoverImage,
+  RootState,
+  setCoverImage,
+  deleteFile,
+} from '../../redux';
+import { Loading } from '../Loading';
 
 interface Props {
   setError: typeof setError;
+  uploadCoverImage: typeof uploadCoverImage;
+  setCoverImage: typeof setCoverImage;
+  deleteFile: typeof deleteFile;
+  loading?: boolean;
+  coverImage?: UploadPath;
 }
 
 const ImageUpload: FC<Props> = (props) => {
-  const [imageUrl, setImageUrl] = useState<string>();
-
-  const [loading = false, setLoading] = useState<boolean>();
-
   const {
     setError,
+    coverImage,
+    uploadCoverImage,
+    loading,
+    setCoverImage,
+    deleteFile,
   } = props;
 
-  const { navigate } = useNavigation();
+  const { goBack } = useNavigation();
 
   const selectImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -39,29 +46,40 @@ const ImageUpload: FC<Props> = (props) => {
       quality: 1,
     });
     if (result.cancelled === false) {
-      setImageUrl(result.uri);
+      upload(result.uri);
     }
   };
 
-  const upload = useCallback(async () => {
-    try {
-      if (imageUrl) {
-        setLoading(true);
-        const fetchResponse = await fetch(imageUrl);
-        const blob = await fetchResponse.blob();
-        return uploadFile(
-          blob,
-          `${PathReference.Images}/${Math.random()}`
-        ).subscribe((response) => {
-          setLoading(false);
-          return navigate(Routes.AddBook);
-        });
+  const upload = useCallback(
+    async (imageUrl: string) => {
+      try {
+        if (imageUrl) {
+          const fetchResponse = await fetch(imageUrl);
+          const blob = await fetchResponse.blob();
+          return uploadCoverImage(
+            blob,
+            `${PathReference.Images}/${Math.random()}`
+          );
+        }
+      } catch (error) {
+        return setError('Something went wrong. Try again');
       }
-    } catch (error) {
-      setLoading(false);
-      return setError('Something went wrong. Try again');
+    },
+    [uploadCoverImage]
+  );
+
+  const acceptImage = useCallback(() => {
+    if (coverImage) {
+      return goBack();
     }
-  }, [imageUrl, uploadFile, navigate]);
+  }, [coverImage]);
+
+  const rejectImage = useCallback(
+    (path: string) => {
+      deleteFile({ filePath: path, type: PathReference.Images });
+    },
+    [deleteFile]
+  );
 
   return (
     <SafeAreaView key='base' style={styles.container}>
@@ -84,18 +102,37 @@ const ImageUpload: FC<Props> = (props) => {
         )}
       </Button>
       <View style={styles.imageView}>
-        {imageUrl && (
+        {coverImage && loading === false && (
           <Image
             source={{
-              uri: imageUrl,
+              uri: coverImage.url,
             }}
             style={styles.image}
           />
         )}
+        {loading && <Loading />}
       </View>
-      <BottomUploadMenu upload={upload} loading={loading} />
+      <BottomUploadMenu
+        accept={acceptImage}
+        loading={loading ? loading : false}
+        reject={() => {
+          if (coverImage && loading === false) {
+            return rejectImage(coverImage.path);
+          }
+        }}
+      />
     </SafeAreaView>
   );
 };
 
-export default connect(null, { setError })(ImageUpload);
+const mapStateToProps = (state: RootState) => {
+  const { loading, coverImage } = state.Book;
+  return { loading, coverImage };
+};
+
+export default connect(mapStateToProps, {
+  setError,
+  uploadCoverImage,
+  setCoverImage,
+  deleteFile,
+})(ImageUpload);
