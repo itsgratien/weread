@@ -4,12 +4,7 @@ export const Routes = {
   ViewAllBooks: 'ViewAllBooks',
   AddBook: 'AddBook',
   ImageUpload: 'ImageUpload',
+  AudioUpload: 'AudioUpload',
 };
 
-export type RootStackParamList = {
-  AddBook: {
-    imageUrl?: string;
-    audioUrl?: string;
-    pdfUrl?: string;
-  };
-};
+export type RootStackParamList = {};

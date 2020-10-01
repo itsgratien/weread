@@ -21,7 +21,7 @@ import { UploadPath } from '../../../repos';
 
 interface Props {
   coverImage?: UploadPath;
-  audioBook?: UploadPath; 
+  audioBook?: UploadPath;
   pdfBook?: UploadPath;
 }
 
@@ -80,7 +80,9 @@ const AddBook: FC<Props> = (props) => {
                   style={styles.input}
                   textStyle={styles.textInput}
                   accessoryRight={() => (
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate(Routes.AudioUpload)}
+                    >
                       <Ionicons
                         size={40}
                         name={

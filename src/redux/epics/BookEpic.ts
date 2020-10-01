@@ -12,7 +12,6 @@ import {
   filter,
   switchMap,
   catchError,
-  combineLatest,
 } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { isOfType } from 'typesafe-actions';
