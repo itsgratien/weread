@@ -12,7 +12,6 @@ import {
   setError,
   uploadCoverImage,
   RootState,
-  setCoverImage,
   deleteFile,
 } from '../../redux';
 import { Loading } from '../Loading';
@@ -20,7 +19,6 @@ import { Loading } from '../Loading';
 interface Props {
   setError: typeof setError;
   uploadCoverImage: typeof uploadCoverImage;
-  setCoverImage: typeof setCoverImage;
   deleteFile: typeof deleteFile;
   loading?: boolean;
   coverImage?: UploadPath;
@@ -32,7 +30,6 @@ const ImageUpload: FC<Props> = (props) => {
     coverImage,
     uploadCoverImage,
     loading,
-    setCoverImage,
     deleteFile,
   } = props;
 
@@ -133,6 +130,5 @@ const mapStateToProps = (state: RootState) => {
 export default connect(mapStateToProps, {
   setError,
   uploadCoverImage,
-  setCoverImage,
   deleteFile,
 })(ImageUpload);

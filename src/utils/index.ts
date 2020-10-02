@@ -13,3 +13,4 @@ export {
 };
 
 export * from './Routes';
+export * from './Audio';

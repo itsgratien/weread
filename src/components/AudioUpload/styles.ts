@@ -20,4 +20,16 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  timeView: {
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+      width: '100%',
+      paddingLeft: 18,
+      paddingRight: 18
+  },
+  timeText: {
+      fontSize: 14,
+      fontFamily: Fonts.tomorrow.medium,
+      color: Colors.black
+  }
 });
