@@ -59,6 +59,9 @@ export const deleteBookFileEpic: RootEpic = ($action) => {
             case PathReference.Audio:
               return of(setAudioBook());
 
+            case PathReference.Pdf:
+              return of(setPdf());
+
             default:
               return of(setDeleteFile());
           }

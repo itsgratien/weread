@@ -103,7 +103,9 @@ const AddBook: FC<Props> = (props) => {
                   style={styles.input}
                   textStyle={styles.textInput}
                   accessoryRight={() => (
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate(Routes.PdfUpload)}
+                    >
                       <Ionicons
                         size={40}
                         name={

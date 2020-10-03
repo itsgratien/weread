@@ -9,7 +9,7 @@ import { default as theme } from '../theme.json';
 import { welcome, RootState, verifyAuthentication } from './redux';
 import { Routes } from './utils';
 import { SocialAuth, Home, AddBook } from './screens';
-import { ImageUpload, AudioUpload } from './components';
+import { ImageUpload, AudioUpload, PdfUpload } from './components';
 import { styles } from './styles';
 import { Image } from 'react-native';
 import { arrowBack } from './assets';
@@ -55,17 +55,27 @@ const Main: FC<Props> = (props) => {
                 name={Routes.ImageUpload}
                 component={ImageUpload}
                 options={{
-                  title: 'Cover Upload',
+                  title: 'Cover Image',
                   headerTitleStyle: styles.headerTitle,
                   headerBackImage: () => <Image source={arrowBack} />,
                   headerStyle: styles.headerStyle,
                 }}
               />
-                <Screen
+              <Screen
                 name={Routes.AudioUpload}
                 component={AudioUpload}
                 options={{
-                  title: 'Audio Upload',
+                  title: 'Audio Version',
+                  headerTitleStyle: styles.headerTitle,
+                  headerBackImage: () => <Image source={arrowBack} />,
+                  headerStyle: styles.headerStyle,
+                }}
+              />
+              <Screen
+                name={Routes.PdfUpload}
+                component={PdfUpload}
+                options={{
+                  title: 'Pdf Version',
                   headerTitleStyle: styles.headerTitle,
                   headerBackImage: () => <Image source={arrowBack} />,
                   headerStyle: styles.headerStyle,

@@ -38,12 +38,6 @@ const AudioUpload: FC<Props> = (props) => {
 
   const { goBack } = useNavigation();
 
-  const accept = () => {
-    if (audioBook) {
-      return goBack();
-    }
-  };
-
   const reject = useCallback(() => {
     if (audioBook) {
       deleteFile({

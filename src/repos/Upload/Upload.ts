@@ -5,7 +5,7 @@ import firebase from 'firebase';
 export enum PathReference {
   Images = 'images',
   Audio = 'audio',
-  Pdf = 'Pdf',
+  Pdf = 'pdf',
 }
 
 export interface UploadPath {

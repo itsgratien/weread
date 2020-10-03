@@ -5,6 +5,7 @@ export const Routes = {
   AddBook: 'AddBook',
   ImageUpload: 'ImageUpload',
   AudioUpload: 'AudioUpload',
+  PdfUpload: 'PdfUpload',
 };
 
 export type RootStackParamList = {};
