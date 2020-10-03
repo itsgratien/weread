@@ -7,12 +7,7 @@ import {
   setAudioBook,
   setDeleteFile,
 } from '..';
-import {
-  map,
-  filter,
-  switchMap,
-  catchError,
-} from 'rxjs/operators';
+import { map, filter, switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { isOfType } from 'typesafe-actions';
 import { uploadFile, deleteFile, PathReference } from '../../repos';
@@ -60,6 +55,9 @@ export const deleteBookFileEpic: RootEpic = ($action) => {
           switch (type) {
             case PathReference.Images:
               return of(setCoverImage());
+
+            case PathReference.Audio:
+              return of(setAudioBook());
 
             default:
               return of(setDeleteFile());

@@ -1,4 +1,4 @@
-import React, { useState, FC, useCallback } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import { Text, Button } from '@ui-kitten/components';
 import { Image, View, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,12 +8,7 @@ import { connect } from 'react-redux';
 import { styles } from './styles';
 import { BottomUploadMenu } from '../BottomUploadMenu';
 import { PathReference, UploadPath } from '../../repos';
-import {
-  setError,
-  uploadCoverImage,
-  RootState,
-  deleteFile,
-} from '../../redux';
+import { setError, uploadCoverImage, RootState, deleteFile } from '../../redux';
 import { Loading } from '../Loading';
 
 interface Props {
@@ -25,13 +20,7 @@ interface Props {
 }
 
 const ImageUpload: FC<Props> = (props) => {
-  const {
-    setError,
-    coverImage,
-    uploadCoverImage,
-    loading,
-    deleteFile,
-  } = props;
+  const { setError, coverImage, uploadCoverImage, loading, deleteFile } = props;
 
   const { goBack } = useNavigation();
 
@@ -65,59 +54,66 @@ const ImageUpload: FC<Props> = (props) => {
     [uploadCoverImage]
   );
 
-  const acceptImage = useCallback(() => {
-    if (coverImage) {
-      return goBack();
-    }
-  }, [coverImage]);
-
-  const rejectImage = useCallback(
+  const reject = useCallback(
     (path: string) => {
-      deleteFile({ filePath: path, type: PathReference.Images });
+      deleteFile({
+        filePath: path,
+        type: PathReference.Images,
+      });
     },
     [deleteFile]
   );
 
-  return (
-    <SafeAreaView key='base' style={styles.container}>
-      <Button
-        accessoryRight={() => (
-          <Ionicons
-            name='ios-cloud-upload'
-            size={30}
-            color='black'
-            style={styles.selectBtnIcon}
-          />
-        )}
-        style={styles.selectBtn}
-        onPress={selectImage}
-      >
-        {() => (
-          <Text style={styles.selectBtnText}>
-            Select Image from your device
-          </Text>
-        )}
-      </Button>
-      <View style={styles.imageView}>
-        {coverImage && loading === false && (
+  const image = useMemo(() => {
+    if (!coverImage) {
+      return null;
+    }
+    return (
+      <>
+        <View style={styles.imageView}>
           <Image
             source={{
               uri: coverImage.url,
             }}
             style={styles.image}
           />
-        )}
-        {loading && <Loading />}
-      </View>
-      <BottomUploadMenu
-        accept={acceptImage}
-        loading={loading ? loading : false}
-        reject={() => {
-          if (coverImage && loading === false) {
-            return rejectImage(coverImage.path);
-          }
-        }}
-      />
+        </View>
+        <BottomUploadMenu
+          accept={() => goBack()}
+          reject={() => reject(coverImage.path)}
+        />
+      </>
+    );
+  }, [coverImage]);
+
+  return (
+    <SafeAreaView key='base' style={styles.container}>
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <Button
+            accessoryRight={() => (
+              <Ionicons
+                name='ios-cloud-upload'
+                size={30}
+                color='black'
+                style={styles.selectBtnIcon}
+              />
+            )}
+            style={styles.selectBtn}
+            onPress={selectImage}
+            disabled={loading}
+          >
+            {() => (
+              <Text style={styles.selectBtnText}>
+                Select Image from your device
+              </Text>
+            )}
+          </Button>
+          {image}
+        </>
+      )}
     </SafeAreaView>
   );
 };

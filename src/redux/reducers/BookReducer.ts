@@ -39,7 +39,7 @@ export const bookReducer = (state = initialState, action: BookAction) => {
         draft.loading = false;
         draft.pdfBook = action.payload.data;
         break;
-      
+
       case BookTypes.SetDeleteFile:
         draft.loading = false;
         break;
