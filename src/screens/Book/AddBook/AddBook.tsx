@@ -1,5 +1,12 @@
 import React, { FC, useState, useEffect } from 'react';
-import { Input, Button, Text } from '@ui-kitten/components';
+import {
+  Input,
+  Button,
+  Text,
+  Select,
+  SelectItem,
+  IndexPath,
+} from '@ui-kitten/components';
 import { Layout } from '../../../components';
 import {
   View,
@@ -16,23 +23,85 @@ import { styles } from './styles';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../../../theme';
 import { Routes } from '../../../utils';
-import { RootState } from '../../../redux';
-import { UploadPath } from '../../../repos';
+import {
+  RootState,
+  addBook,
+  listenToAllCategory,
+  setError,
+} from '../../../redux';
+import { UploadPath, BookSchema, Category } from '../../../repos';
+import { Loading } from '../../../components';
 
 interface Props {
   coverImage?: UploadPath;
   audioBook?: UploadPath;
   pdfBook?: UploadPath;
+  addBook: typeof addBook;
+  listenToAllCategory: typeof listenToAllCategory;
+  categories?: Category[];
+  setError: typeof setError;
+  message?: string;
 }
 
 const AddBook: FC<Props> = (props) => {
   const [title = '', setTitle] = useState<string>();
 
-  const [category, setCategory] = useState<string>();
+  const [categoryId = '', setCategoryId] = useState<string>();
 
-  const { coverImage, pdfBook, audioBook } = props;
+  const [categoryName = '', setCategoryName] = useState<string>();
+
+  const [loading = false, setLoading] = useState<boolean>();
+
+  const [selectedIndex, setSelectedIndex] = useState<IndexPath>(
+    new IndexPath(0)
+  );
+
+  const {
+    coverImage,
+    pdfBook,
+    audioBook,
+    addBook,
+    listenToAllCategory,
+    categories,
+    setError,
+  } = props;
 
   const navigation = useNavigation();
+
+  useEffect(() => {
+    listenToAllCategory();
+  }, [listenToAllCategory]);
+
+  useEffect(() => {
+    if (categories && categories.length > 0) {
+      setCategoryId(categories[0].id);
+      setCategoryName(categories[0].name);
+    }
+  }, [categories]);
+
+  const saveBook = async () => {
+    setLoading(true);
+    try {
+      const validate = await BookSchema.validate({
+        title,
+        category: {
+          id: categoryId,
+          name: categoryName,
+        },
+        cover: coverImage?.url,
+        audio: audioBook?.url,
+        pdf: pdfBook?.url,
+      });
+      return addBook({ ...validate });
+    } catch (error) {
+      setError(error);
+    }
+    setLoading(false);
+  };
+
+  if (!categories) {
+    return <Loading />;
+  }
 
   return (
     <Layout>
@@ -49,8 +118,44 @@ const AddBook: FC<Props> = (props) => {
                   placeholder='title of book'
                   style={styles.input}
                   textStyle={styles.textInput}
+                  value={title}
+                  onChangeText={(val) => setTitle(val)}
                 />
               </View>
+              {categories && categories.length > 0 && (
+                <View style={styles.inputView}>
+                  <Text style={styles.label}>Category</Text>
+                  <Select
+                    placeholder='Category'
+                    onSelect={(index) => {
+                      setCategoryId(categories[(index as IndexPath).row].id);
+                      setCategoryName(
+                        categories[(index as IndexPath).row].name
+                      );
+                      setSelectedIndex(index as IndexPath);
+                    }}
+                    selectedIndex={selectedIndex}
+                    value={() => (
+                      <Text style={styles.selectInputText}>
+                        {categories[selectedIndex.row].name}
+                      </Text>
+                    )}
+                    size='large'
+                  >
+                    <SelectItem title='Select category' />
+                    {categories.map((item) => (
+                      <SelectItem
+                        title={() => (
+                          <Text style={styles.selectInputText}>
+                            {item.name}
+                          </Text>
+                        )}
+                        key={item.id}
+                      />
+                    ))}
+                  </Select>
+                </View>
+              )}
               <View style={styles.inputView}>
                 <Input
                   placeholder='Cover'
@@ -120,7 +225,11 @@ const AddBook: FC<Props> = (props) => {
                   disabled={true}
                 />
               </View>
-              <Button style={styles.saveBtn}>
+              <Button
+                style={styles.saveBtn}
+                onPress={() => saveBook()}
+                disabled={loading ? loading : false}
+              >
                 {() => <Text style={styles.btnText}>Save</Text>}
               </Button>
             </>
@@ -132,7 +241,12 @@ const AddBook: FC<Props> = (props) => {
 };
 
 const mapStateToProps = (state: RootState) => {
-  const { coverImage, audioBook, pdfBook } = state.Book;
-  return { coverImage, audioBook, pdfBook };
+  const { coverImage, audioBook, pdfBook, categories } = state.Book;
+  const { message } = state.Auth;
+  return { coverImage, audioBook, pdfBook, categories, message };
 };
-export default connect(mapStateToProps)(AddBook);
+export default connect(mapStateToProps, {
+  addBook,
+  listenToAllCategory,
+  setError,
+})(AddBook);

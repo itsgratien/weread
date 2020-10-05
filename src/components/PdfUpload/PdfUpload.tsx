@@ -63,14 +63,19 @@ const PdfUpload: FC<Props> = (props) => {
       return null;
     }
     return (
-      <>
-        <View style={styles.pdfView}>
-          <WebView source={{ uri: pdfBook.url }} />
-        </View>
-        <BottomUploadMenu accept={() => goBack()} reject={() => reject()} />
-      </>
+      <View style={styles.pdfView}>
+        <WebView source={{ uri: pdfBook.url }} />
+      </View>
     );
   }, [pdfBook]);
+
+  const bottom = useMemo(() => {
+    if (!pdfBook) {
+      return null;
+    }
+
+    return <BottomUploadMenu accept={() => goBack()} reject={() => reject()} />;
+  }, [pdfBook, goBack, reject]);
 
   if (loading) {
     return <Loading />;
@@ -96,6 +101,7 @@ const PdfUpload: FC<Props> = (props) => {
         )}
       </Button>
       {pdf}
+      {bottom}
     </SafeAreaView>
   );
 };
@@ -104,4 +110,6 @@ const mapStateToProps = (state: RootState) => {
   const { loading, pdfBook } = state.Book;
   return { pdfBook, loading };
 };
-export default connect(mapStateToProps, { uploadPdf, setError, deleteFile })(PdfUpload);
+export default connect(mapStateToProps, { uploadPdf, setError, deleteFile })(
+  PdfUpload
+);

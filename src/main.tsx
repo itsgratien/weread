@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider } from '@ui-kitten/components';
 import { default as theme } from '../theme.json';
+import { default as mapping } from '../mapping.json';
 import { welcome, RootState, verifyAuthentication } from './redux';
 import { Routes } from './utils';
 import { SocialAuth, Home, AddBook } from './screens';
@@ -31,7 +32,11 @@ const Main: FC<Props> = (props) => {
   }, [verifyAuthentication, welcome]);
 
   return (
-    <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
+    <ApplicationProvider
+      {...eva}
+      theme={{ ...eva.light, ...theme }}
+      customMapping={{ ...eva.mapping, ...mapping }}
+    >
       <NavigationContainer>
         <Navigator initialRouteName={Routes.SocialAuth}>
           {isAuthenticated ? (

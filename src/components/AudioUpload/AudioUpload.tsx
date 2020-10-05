@@ -85,11 +85,10 @@ const AudioUpload: FC<Props> = (props) => {
       const soundObject = new Audio.Sound();
       const track = await soundObject.loadAsync(
         { uri },
-        { shouldPlay: true },
+        { shouldPlay: false },
         false
       );
       if (track.isLoaded) {
-        setIsPlaying(true);
         setDuration(track.durationMillis);
         setPlayBackInstance(soundObject);
       }
@@ -178,11 +177,11 @@ const AudioUpload: FC<Props> = (props) => {
   }, [audioBook, setupAudio]);
 
   const bottom = useMemo(() => {
-    if (audioBook) {
-      return <BottomUploadMenu accept={() => goBack()} reject={reject} />;
+    if (!audioBook) {
+      return null;
     }
-    return null;
-  }, [audioBook]);
+    return <BottomUploadMenu accept={() => goBack()} reject={() => reject()} />;
+  }, [audioBook, goBack, reject]);
 
   return (
     <SafeAreaView key='base' style={styles.container}>

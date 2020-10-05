@@ -6,11 +6,21 @@ import {
   setPdf,
   setAudioBook,
   setDeleteFile,
+  setCategories,
+  setBooks,
+  setMessage,
 } from '..';
 import { map, filter, switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { isOfType } from 'typesafe-actions';
-import { uploadFile, deleteFile, PathReference } from '../../repos';
+import {
+  uploadFile,
+  deleteFile,
+  PathReference,
+  listenToAllCategory,
+  listenToAllBook,
+  addNewBook,
+} from '../../repos';
 
 export const uploadImageEpic: RootEpic = ($action) => {
   return $action.pipe(
@@ -72,5 +82,38 @@ export const deleteBookFileEpic: RootEpic = ($action) => {
       console.log(error);
       return of(setError('Something went wrong. Try again'));
     })
+  );
+};
+
+export const listenToAllCategoryEpic: RootEpic = ($action) => {
+  return $action.pipe(
+    filter(isOfType(BookTypes.ListenToAllCategory)),
+    switchMap(() => {
+      return listenToAllCategory().pipe(map((res) => setCategories(res)));
+    }),
+    catchError(() => of(setError('Something went wrong. Try again')))
+  );
+};
+
+export const newBookEpic: RootEpic = ($action) => {
+  return $action.pipe(
+    filter(isOfType(BookTypes.AddBook)),
+    switchMap((action) => {
+      const { data } = action.payload;
+      return addNewBook(data).pipe(
+        map(() => setMessage('Book Saved Successfully'))
+      );
+    }),
+    catchError(() => of(setError('Something went wrong. Try again')))
+  );
+};
+
+export const listenToAllBookEpic: RootEpic = ($action) => {
+  return $action.pipe(
+    filter(isOfType(BookTypes.ListenToAllBook)),
+    switchMap((action) => {
+      return listenToAllBook().pipe(map((res) => setBooks(res)));
+    }),
+    catchError(() => of(setError('Something went wrong. Try again')))
   );
 };

@@ -84,7 +84,7 @@ const ImageUpload: FC<Props> = (props) => {
         />
       </>
     );
-  }, [coverImage]);
+  }, [coverImage, goBack, reject]);
 
   return (
     <SafeAreaView key='base' style={styles.container}>

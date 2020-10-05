@@ -12,6 +12,9 @@ import {
   uploadAudioBookEpic,
   uploadPdfEpic,
   deleteBookFileEpic,
+  listenToAllBookEpic,
+  newBookEpic,
+  listenToAllCategoryEpic,
 } from './BookEpic';
 
 export default combineEpics(
@@ -23,6 +26,9 @@ export default combineEpics(
   uploadAudioBookEpic,
   uploadPdfEpic,
   deleteBookFileEpic,
+  listenToAllBookEpic,
+  newBookEpic,
+  listenToAllCategoryEpic
 );
 
 export type RootEpic = Epic<RootAction, RootAction, RootState>;
