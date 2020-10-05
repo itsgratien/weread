@@ -6,9 +6,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider } from '@ui-kitten/components';
 import { default as theme } from '../theme.json';
-import { welcome, RootState } from './redux';
+import { default as mapping } from '../mapping.json';
+import { welcome, RootState, verifyAuthentication } from './redux';
 import { Routes } from './utils';
 import { SocialAuth, Home, AddBook } from './screens';
+import { ImageUpload, AudioUpload, PdfUpload } from './components';
 import { styles } from './styles';
 import { Image } from 'react-native';
 import { arrowBack } from './assets';
@@ -16,18 +18,25 @@ interface Props {
   welcome: typeof welcome;
   message?: string;
   isAuthenticated?: boolean;
+  verifyAuthentication: typeof verifyAuthentication;
 }
+
 const { Navigator, Screen } = createStackNavigator();
 
 const Main: FC<Props> = (props) => {
-  const { welcome, isAuthenticated } = props;
+  const { welcome, isAuthenticated, verifyAuthentication } = props;
 
   useEffect(() => {
     welcome();
-  }, []);
+    verifyAuthentication();
+  }, [verifyAuthentication, welcome]);
 
   return (
-    <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
+    <ApplicationProvider
+      {...eva}
+      theme={{ ...eva.light, ...theme }}
+      customMapping={{ ...eva.mapping, ...mapping }}
+    >
       <NavigationContainer>
         <Navigator initialRouteName={Routes.SocialAuth}>
           {isAuthenticated ? (
@@ -42,6 +51,36 @@ const Main: FC<Props> = (props) => {
                 component={AddBook}
                 options={{
                   title: 'New book',
+                  headerTitleStyle: styles.headerTitle,
+                  headerBackImage: () => <Image source={arrowBack} />,
+                  headerStyle: styles.headerStyle,
+                }}
+              />
+              <Screen
+                name={Routes.ImageUpload}
+                component={ImageUpload}
+                options={{
+                  title: 'Cover Image',
+                  headerTitleStyle: styles.headerTitle,
+                  headerBackImage: () => <Image source={arrowBack} />,
+                  headerStyle: styles.headerStyle,
+                }}
+              />
+              <Screen
+                name={Routes.AudioUpload}
+                component={AudioUpload}
+                options={{
+                  title: 'Audio Version',
+                  headerTitleStyle: styles.headerTitle,
+                  headerBackImage: () => <Image source={arrowBack} />,
+                  headerStyle: styles.headerStyle,
+                }}
+              />
+              <Screen
+                name={Routes.PdfUpload}
+                component={PdfUpload}
+                options={{
+                  title: 'Pdf Version',
                   headerTitleStyle: styles.headerTitle,
                   headerBackImage: () => <Image source={arrowBack} />,
                   headerStyle: styles.headerStyle,
@@ -68,4 +107,6 @@ const mapStateToProps = (state: RootState) => {
   return { message, isAuthenticated };
 };
 
-export default connect(mapStateToProps, { welcome })(Main);
+export default connect(mapStateToProps, { welcome, verifyAuthentication })(
+  Main
+);

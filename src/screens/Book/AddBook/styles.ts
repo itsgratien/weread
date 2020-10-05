@@ -36,4 +36,13 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: Fonts.tomorrow.bold,
   },
+  selectInput: {
+    fontFamily: Fonts.tomorrow.regular,
+    borderColor: Colors.f8,
+    borderRadius: 10,
+  },
+  selectInputText: {
+    fontFamily: Fonts.tomorrow.regular,
+    fontSize: 14,
+  }
 });

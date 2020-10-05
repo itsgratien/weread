@@ -1,4 +1,4 @@
-import { firestore } from 'firebase';
+import { firestore, storage } from 'firebase';
 import 'firebase/firestore';
 
 export enum firebaseCollection {
@@ -12,7 +12,7 @@ export const firebaseConfig = {
   authDomain: 'weread-2f25e.firebaseapp.com',
   databaseURL: 'https://weread-2f25e.firebaseio.com',
   projectId: 'weread-2f25e',
-  storageBucket: 'weread-2f25e.appspot.com',
+  storageBucket: 'gs://weread-2f25e.appspot.com',
   messagingSenderId: '416068594531',
   appId: '1:416068594531:web:df0acd574ca7c14e07c156',
 };
@@ -21,4 +21,8 @@ export const FireStoreCollections = {
   users: () => firestore().collection(firebaseCollection.users),
   books: () => firestore().collection(firebaseCollection.books),
   categories: () => firestore().collection(firebaseCollection.categories),
+};
+
+export const StorageReference = {
+  images: (path: string) => storage().ref().child(path),
 };

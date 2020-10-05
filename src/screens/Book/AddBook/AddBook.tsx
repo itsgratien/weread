@@ -1,5 +1,12 @@
-import React, { FC, useState } from 'react';
-import { Input, Button, Text } from '@ui-kitten/components';
+import React, { FC, useState, useEffect } from 'react';
+import {
+  Input,
+  Button,
+  Text,
+  Select,
+  SelectItem,
+  IndexPath,
+} from '@ui-kitten/components';
 import { Layout } from '../../../components';
 import {
   View,
@@ -9,20 +16,92 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ScrollView,
-  SafeAreaView,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { connect } from 'react-redux';
 import { styles } from './styles';
 import { Ionicons } from '@expo/vector-icons';
-interface Props {}
+import { Colors } from '../../../theme';
+import { Routes } from '../../../utils';
+import {
+  RootState,
+  addBook,
+  listenToAllCategory,
+  setError,
+} from '../../../redux';
+import { UploadPath, BookSchema, Category } from '../../../repos';
+import { Loading } from '../../../components';
 
-const AddBook = () => {
+interface Props {
+  coverImage?: UploadPath;
+  audioBook?: UploadPath;
+  pdfBook?: UploadPath;
+  addBook: typeof addBook;
+  listenToAllCategory: typeof listenToAllCategory;
+  categories?: Category[];
+  setError: typeof setError;
+  message?: string;
+}
+
+const AddBook: FC<Props> = (props) => {
   const [title = '', setTitle] = useState<string>();
 
-  const [category, setCategory] = useState<string>();
+  const [categoryId = '', setCategoryId] = useState<string>();
 
-  const [audio, setAudio] = useState<string>();
+  const [categoryName = '', setCategoryName] = useState<string>();
 
-  const [pdf, setPdf] = useState<string>();
+  const [loading = false, setLoading] = useState<boolean>();
+
+  const [selectedIndex, setSelectedIndex] = useState<IndexPath>(
+    new IndexPath(0)
+  );
+
+  const {
+    coverImage,
+    pdfBook,
+    audioBook,
+    addBook,
+    listenToAllCategory,
+    categories,
+    setError,
+  } = props;
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    listenToAllCategory();
+  }, [listenToAllCategory]);
+
+  useEffect(() => {
+    if (categories && categories.length > 0) {
+      setCategoryId(categories[0].id);
+      setCategoryName(categories[0].name);
+    }
+  }, [categories]);
+
+  const saveBook = async () => {
+    setLoading(true);
+    try {
+      const validate = await BookSchema.validate({
+        title,
+        category: {
+          id: categoryId,
+          name: categoryName,
+        },
+        cover: coverImage?.url,
+        audio: audioBook?.url,
+        pdf: pdfBook?.url,
+      });
+      return addBook({ ...validate });
+    } catch (error) {
+      setError(error);
+    }
+    setLoading(false);
+  };
+
+  if (!categories) {
+    return <Loading />;
+  }
 
   return (
     <Layout>
@@ -39,18 +118,65 @@ const AddBook = () => {
                   placeholder='title of book'
                   style={styles.input}
                   textStyle={styles.textInput}
+                  value={title}
+                  onChangeText={(val) => setTitle(val)}
                 />
               </View>
+              {categories && categories.length > 0 && (
+                <View style={styles.inputView}>
+                  <Text style={styles.label}>Category</Text>
+                  <Select
+                    placeholder='Category'
+                    onSelect={(index) => {
+                      setCategoryId(categories[(index as IndexPath).row].id);
+                      setCategoryName(
+                        categories[(index as IndexPath).row].name
+                      );
+                      setSelectedIndex(index as IndexPath);
+                    }}
+                    selectedIndex={selectedIndex}
+                    value={() => (
+                      <Text style={styles.selectInputText}>
+                        {categories[selectedIndex.row].name}
+                      </Text>
+                    )}
+                    size='large'
+                  >
+                    <SelectItem title='Select category' />
+                    {categories.map((item) => (
+                      <SelectItem
+                        title={() => (
+                          <Text style={styles.selectInputText}>
+                            {item.name}
+                          </Text>
+                        )}
+                        key={item.id}
+                      />
+                    ))}
+                  </Select>
+                </View>
+              )}
               <View style={styles.inputView}>
                 <Input
                   placeholder='Cover'
                   style={styles.input}
                   textStyle={styles.textInput}
                   accessoryRight={() => (
-                    <TouchableOpacity>
-                      <Ionicons size={40} name='ios-add-circle-outline' />
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate(Routes.ImageUpload)}
+                    >
+                      <Ionicons
+                        size={40}
+                        name={
+                          coverImage
+                            ? 'ios-checkmark-circle-outline'
+                            : 'ios-add-circle-outline'
+                        }
+                        color={coverImage ? Colors.primary : Colors.rgbBlack}
+                      />
                     </TouchableOpacity>
                   )}
+                  disabled={true}
                 />
               </View>
               <View style={styles.inputView}>
@@ -59,10 +185,21 @@ const AddBook = () => {
                   style={styles.input}
                   textStyle={styles.textInput}
                   accessoryRight={() => (
-                    <TouchableOpacity>
-                      <Ionicons size={40} name='ios-add-circle-outline' />
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate(Routes.AudioUpload)}
+                    >
+                      <Ionicons
+                        size={40}
+                        name={
+                          audioBook
+                            ? 'ios-checkmark-circle-outline'
+                            : 'ios-add-circle-outline'
+                        }
+                        color={audioBook ? Colors.primary : Colors.rgbBlack}
+                      />
                     </TouchableOpacity>
                   )}
+                  disabled={true}
                 />
               </View>
               <View style={styles.inputView}>
@@ -71,13 +208,28 @@ const AddBook = () => {
                   style={styles.input}
                   textStyle={styles.textInput}
                   accessoryRight={() => (
-                    <TouchableOpacity>
-                      <Ionicons size={40} name='ios-add-circle-outline' />
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate(Routes.PdfUpload)}
+                    >
+                      <Ionicons
+                        size={40}
+                        name={
+                          pdfBook
+                            ? 'ios-checkmark-circle-outline'
+                            : 'ios-add-circle-outline'
+                        }
+                        color={pdfBook ? Colors.primary : Colors.rgbBlack}
+                      />
                     </TouchableOpacity>
                   )}
+                  disabled={true}
                 />
               </View>
-              <Button style={styles.saveBtn}>
+              <Button
+                style={styles.saveBtn}
+                onPress={() => saveBook()}
+                disabled={loading ? loading : false}
+              >
                 {() => <Text style={styles.btnText}>Save</Text>}
               </Button>
             </>
@@ -88,4 +240,13 @@ const AddBook = () => {
   );
 };
 
-export default AddBook;
+const mapStateToProps = (state: RootState) => {
+  const { coverImage, audioBook, pdfBook, categories } = state.Book;
+  const { message } = state.Auth;
+  return { coverImage, audioBook, pdfBook, categories, message };
+};
+export default connect(mapStateToProps, {
+  addBook,
+  listenToAllCategory,
+  setError,
+})(AddBook);

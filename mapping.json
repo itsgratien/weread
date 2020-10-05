@@ -1,0 +1,13 @@
+{
+  "components": {
+    "Select": {
+      "appearances": {
+        "default": {
+            "mapping": {
+                "backgroundColor": "white"
+            }
+        }
+      }
+    }
+  }
+}
