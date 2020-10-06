@@ -1,15 +1,9 @@
 import React, { FC, useEffect } from 'react';
 import { Text } from '@ui-kitten/components';
-import {
-  View,
-  FlatList,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from 'react-native';
+import { View, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { RootState, listenToAllBook, listenToAllCategory } from '../../redux';
 import { connect } from 'react-redux';
+import { RootState, listenToAllBook, listenToAllCategory } from '../../redux';
 import { Routes } from '../../utils/Routes';
 import { Loading, Layout, Header } from '../../components';
 import { Category, Book } from '../../repos';
@@ -23,49 +17,6 @@ interface Props {
   categories?: Category[];
   books?: Book[];
 }
-
-const DATA = [
-  {
-    user: {
-      profile: '',
-      username: '',
-    },
-    image:
-      'https://images.unsplash.com/photo-1513001900722-370f803f498d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60',
-  },
-  {
-    user: {
-      profile: '',
-      username: '',
-    },
-    image:
-      'https://images.unsplash.com/photo-1517148892120-4d2da39c8dc1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60',
-  },
-  {
-    user: {
-      profile: '',
-      username: '',
-    },
-    image:
-      'https://images.unsplash.com/photo-1476275466078-4007374efbbe?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60',
-  },
-  {
-    user: {
-      profile: '',
-      username: '',
-    },
-    image:
-      'https://images.unsplash.com/photo-1440778303588-435521a205bc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60',
-  },
-  {
-    user: {
-      profile: '',
-      username: '',
-    },
-    image:
-      'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60',
-  },
-];
 
 const Home: FC<Props> = (props) => {
   const {
@@ -90,47 +41,62 @@ const Home: FC<Props> = (props) => {
     listenToAllCategory();
   }, [listenToAllBook, listenToAllCategory]);
 
-  if (loading) {
+  if (loading && loading === true) {
     return <Loading />;
   }
 
   return (
     <Layout>
       <Header />
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         {categories && categories.length > 0 && (
-          <FlatList
-            data={categories.slice(0, 5)}
-            renderItem={({ item }) => (
-              <TouchableOpacity style={styles.categoryList}>
+          <View style={styles.category}>
+            {categories.map((item, index) => (
+              <TouchableOpacity style={styles.categoryList} key={index}>
                 <Text style={styles.categoryName}>{item.name}</Text>
               </TouchableOpacity>
-            )}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.category}
-          />
+            ))}
+          </View>
         )}
-
-        <FlatList
-          data={DATA}
-          keyExtractor={(item) => `${Math.random()}`}
-          renderItem={({ item }) => (
-            <TouchableOpacity style={styles.bookView}>
-              <View>
-                <Image source={{ uri: item.image }} style={styles.coverImage} />
-              </View>
-            </TouchableOpacity>
-          )}
-          contentContainerStyle={styles.books}
-        />
-      </View>
+        {books && books.length > 0 && (
+          <View style={styles.books}>
+            {books.map((item, index) => (
+              <TouchableOpacity style={styles.book} key={index}>
+                <View style={styles.bookContainer}>
+                  <View style={styles.bookImageView}>
+                    <Image
+                      source={{
+                        uri: item.cover,
+                      }}
+                      style={styles.bookImage}
+                    />
+                  </View>
+                  <View style={styles.authorView}>
+                    <Image
+                      source={{
+                        uri:
+                          'https://lh3.googleusercontent.com/a-/AOh14GhRhFDnwC9iQVpcePYJD5KOexy2gXMAEorkX6CYcw',
+                      }}
+                      style={styles.authorAvatar}
+                    />
+                    <Text style={styles.authorName}>gratien</Text>
+                  </View>
+                </View>
+                <View style={{ marginTop: 10, marginLeft: 10 }}>
+                  <Text style={styles.bookTitle}>{item.title}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+      </ScrollView>
     </Layout>
   );
 };
 
 const mapStateToProps = (state: RootState) => {
-  const { isAuthenticated, loading } = state.Auth;
-  const { categories, books } = state.Book;
+  const { isAuthenticated } = state.Auth;
+  const { categories, books, loading } = state.Book;
 
   return { isAuthenticated, loading, categories, books };
 };

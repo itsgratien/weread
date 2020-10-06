@@ -9,6 +9,8 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: Colors.white,
+    paddingBottom: 10
   },
   avatar: {
     width: 30,

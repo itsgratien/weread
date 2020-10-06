@@ -1,16 +1,17 @@
 import { StyleSheet, Dimensions } from 'react-native';
 import { Fonts, Colors } from '../../theme';
 
+const window = Dimensions.get('window');
 export const styles = StyleSheet.create({
   container: {
-    paddingLeft: 23,
-    paddingRight: 23,
+    position: 'relative',
   },
   category: {
-    marginTop: 40,
+    marginTop: 20,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 20,
   },
   categoryList: {
     backgroundColor: 'rgba(0, 0, 0, 0.04)',
@@ -29,17 +30,49 @@ export const styles = StyleSheet.create({
     textTransform: 'lowercase',
   },
   books: {
-    marginTop: 30,
+    position: 'relative'
+  },
+  book: {
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.f8,
+    paddingBottom: 10,
+    paddingLeft: 23,
+    paddingRight: 23,
+    paddingTop: 10,
+  },
+  bookContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
-  bookView: {
-    flex: 1,
-    flexGrow: 1,
-    flexBasis: 1
+  bookImageView: {
+    width: window.width - 120,
+    height: 130,
+    borderRadius: 30,
   },
-  coverImage: {
-    alignSelf: 'stretch',
+  bookImage: {
     width: '100%',
-    height: 200,
+    height: '100%',
+    borderRadius: 30,
+    resizeMode: 'cover',
+  },
+  authorView: {
+    marginLeft: 'auto',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  authorAvatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+  },
+  authorName: {
+    fontFamily: Fonts.tomorrow.medium,
+    fontSize: 12,
+    textAlign: 'center'
+  },
+  bookTitle: {
+    fontSize: 14,
+    fontFamily: Fonts.tomorrow.medium,
   },
 });
