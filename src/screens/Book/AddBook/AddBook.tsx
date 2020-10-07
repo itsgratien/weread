@@ -48,7 +48,7 @@ const AddBook: FC<Props> = (props) => {
 
   const [categoryId = '', setCategoryId] = useState<string>();
 
-  const [categoryName = '', setCategoryName] = useState<string>();
+  const [categoryName, setCategoryName] = useState<string>();
 
   const [loading = false, setLoading] = useState<boolean>();
 
@@ -71,13 +71,6 @@ const AddBook: FC<Props> = (props) => {
   useEffect(() => {
     listenToAllCategory();
   }, [listenToAllCategory]);
-
-  useEffect(() => {
-    if (categories && categories.length > 0) {
-      setCategoryId(categories[0].id);
-      setCategoryName(categories[0].name);
-    }
-  }, [categories]);
 
   const saveBook = async () => {
     setLoading(true);
@@ -128,21 +121,24 @@ const AddBook: FC<Props> = (props) => {
                   <Select
                     placeholder='Category'
                     onSelect={(index) => {
-                      setCategoryId(categories[(index as IndexPath).row].id);
-                      setCategoryName(
-                        categories[(index as IndexPath).row].name
+                      const selectIndexPath = index as IndexPath;
+                      const find = categories.find(
+                        (item, i) => i === selectIndexPath.row
                       );
-                      setSelectedIndex(index as IndexPath);
+                      if (find) {
+                        setCategoryId(find.id);
+                        setCategoryName(find.name);
+                        setSelectedIndex(selectIndexPath);
+                      }
                     }}
                     selectedIndex={selectedIndex}
                     value={() => (
                       <Text style={styles.selectInputText}>
-                        {categories[selectedIndex.row].name}
+                        {categoryName ? categoryName : 'Select category'}
                       </Text>
                     )}
                     size='large'
                   >
-                    <SelectItem title='Select category' />
                     {categories.map((item) => (
                       <SelectItem
                         title={() => (

@@ -7,7 +7,7 @@ import * as eva from '@eva-design/eva';
 import { ApplicationProvider } from '@ui-kitten/components';
 import { default as theme } from '../theme.json';
 import { default as mapping } from '../mapping.json';
-import { welcome, RootState, verifyAuthentication } from './redux';
+import { RootState, verifyAuthentication } from './redux';
 import { Routes } from './utils';
 import { SocialAuth, Home, AddBook } from './screens';
 import { ImageUpload, AudioUpload, PdfUpload } from './components';
@@ -15,7 +15,6 @@ import { styles } from './styles';
 import { Image } from 'react-native';
 import { arrowBack } from './assets';
 interface Props {
-  welcome: typeof welcome;
   message?: string;
   isAuthenticated?: boolean;
   verifyAuthentication: typeof verifyAuthentication;
@@ -24,12 +23,11 @@ interface Props {
 const { Navigator, Screen } = createStackNavigator();
 
 const Main: FC<Props> = (props) => {
-  const { welcome, isAuthenticated, verifyAuthentication } = props;
+  const { isAuthenticated, verifyAuthentication } = props;
 
   useEffect(() => {
-    welcome();
     verifyAuthentication();
-  }, [verifyAuthentication, welcome]);
+  }, [verifyAuthentication]);
 
   return (
     <ApplicationProvider
@@ -107,6 +105,6 @@ const mapStateToProps = (state: RootState) => {
   return { message, isAuthenticated };
 };
 
-export default connect(mapStateToProps, { welcome, verifyAuthentication })(
+export default connect(mapStateToProps, { verifyAuthentication })(
   Main
 );

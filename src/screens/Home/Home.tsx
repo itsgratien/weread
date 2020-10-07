@@ -10,7 +10,6 @@ import { Category, Book } from '../../repos';
 import { styles } from './styles';
 
 interface Props {
-  isAuthenticated?: boolean;
   loading?: boolean;
   listenToAllBook: typeof listenToAllBook;
   listenToAllCategory: typeof listenToAllCategory;
@@ -20,7 +19,6 @@ interface Props {
 
 const Home: FC<Props> = (props) => {
   const {
-    isAuthenticated,
     loading,
     listenToAllBook,
     listenToAllCategory,
@@ -29,12 +27,6 @@ const Home: FC<Props> = (props) => {
   } = props;
 
   const { navigate } = useNavigation();
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate(Routes.SocialAuth);
-    }
-  }, [isAuthenticated]);
 
   useEffect(() => {
     listenToAllBook();
@@ -95,11 +87,11 @@ const Home: FC<Props> = (props) => {
 };
 
 const mapStateToProps = (state: RootState) => {
-  const { isAuthenticated } = state.Auth;
   const { categories, books, loading } = state.Book;
 
-  return { isAuthenticated, loading, categories, books };
+  return { loading, categories, books };
 };
+
 export default connect(mapStateToProps, {
   listenToAllBook,
   listenToAllCategory,

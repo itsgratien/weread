@@ -79,7 +79,6 @@ export const deleteBookFileEpic: RootEpic = ($action) => {
       );
     }),
     catchError((error) => {
-      console.log(error);
       return of(setError('Something went wrong. Try again'));
     })
   );

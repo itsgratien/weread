@@ -1,11 +1,13 @@
 import { produce } from 'immer';
 import { AuthTypes, AuthAction } from '../actions';
+import { User } from '../../repos';
 
 export interface AuthState {
   readonly message?: string;
   readonly loading?: boolean;
   readonly error?: string;
   readonly isAuthenticated?: boolean;
+  readonly user?: User;
 }
 
 const initialState: AuthState = {};
@@ -23,6 +25,7 @@ export const authReducer = (state = initialState, action: AuthAction) => {
 
       case AuthTypes.LoginWithGoogle:
       case AuthTypes.Logout:
+      case AuthTypes.VerifyAuthentication:
         draft.loading = true;
         break;
 
@@ -30,6 +33,12 @@ export const authReducer = (state = initialState, action: AuthAction) => {
         draft.isAuthenticated = action.payload.isAuthenticated;
         draft.message = action.payload.message;
         draft.loading = false;
+        break;
+
+      case AuthTypes.SetCurrentUser:
+        draft.user = action.payload.user;
+        draft.loading = false;
+        draft.isAuthenticated = true;
         break;
 
       default:
