@@ -46,7 +46,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   bookImageView: {
-    width: window.width - 120,
+    width: window.width - 130,
     height: 130,
     borderRadius: 30,
   },
@@ -59,7 +59,7 @@ export const styles = StyleSheet.create({
   authorView: {
     marginLeft: 'auto',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   authorAvatar: {
     width: 50,

@@ -12,8 +12,7 @@ export interface Category {
 
 export const BookSchema = object()
   .shape({
-    title: string()
-      .required('title is required'),
+    title: string().required('title is required'),
     category: object()
       .shape({
         id: string().required('category id is required'),
@@ -24,6 +23,14 @@ export const BookSchema = object()
     audio: string().required('audio is required'),
     pdf: string().optional(),
     id: string().optional(),
+    userId: string().optional(),
+    user: object()
+      .shape({
+        username: string().required('username is required'),
+        email: string().required('email is required'),
+        profilePicture: string().optional(),
+      })
+      .optional(),
     createdAt: date().optional(),
     updatedAt: date().optional(),
   })

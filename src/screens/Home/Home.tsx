@@ -8,6 +8,7 @@ import { Routes } from '../../utils/Routes';
 import { Loading, Layout, Header } from '../../components';
 import { Category, Book } from '../../repos';
 import { styles } from './styles';
+import { avatar } from '../../assets';
 
 interface Props {
   loading?: boolean;
@@ -64,14 +65,21 @@ const Home: FC<Props> = (props) => {
                     />
                   </View>
                   <View style={styles.authorView}>
-                    <Image
-                      source={{
-                        uri:
-                          'https://lh3.googleusercontent.com/a-/AOh14GhRhFDnwC9iQVpcePYJD5KOexy2gXMAEorkX6CYcw',
-                      }}
-                      style={styles.authorAvatar}
-                    />
-                    <Text style={styles.authorName}>gratien</Text>
+                    {item.user && item.user.profilePicture ? (
+                      <Image
+                        source={{
+                          uri: item.user.profilePicture,
+                        }}
+                        style={styles.authorAvatar}
+                      />
+                    ) : (
+                      <Image source={avatar} style={styles.authorAvatar} />
+                    )}
+                    <View style={{ width: 80 }}>
+                      <Text style={styles.authorName}>
+                        {item.user && item.user.username}
+                      </Text>
+                    </View>
                   </View>
                 </View>
                 <View style={{ marginTop: 10, marginLeft: 10 }}>
