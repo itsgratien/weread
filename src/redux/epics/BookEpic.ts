@@ -10,8 +10,14 @@ import {
   setBooks,
   setMessage,
 } from '..';
-import { map, filter, switchMap, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import {
+  map,
+  filter,
+  switchMap,
+  catchError,
+  withLatestFrom,
+} from 'rxjs/operators';
+import { of, combineLatest } from 'rxjs';
 import { isOfType } from 'typesafe-actions';
 import {
   uploadFile,
@@ -20,6 +26,8 @@ import {
   listenToAllCategory,
   listenToAllBook,
   addNewBook,
+  listenToAllUsers,
+  listenToSpecificUser,
 } from '../../repos';
 
 export const uploadImageEpic: RootEpic = ($action) => {
@@ -79,7 +87,6 @@ export const deleteBookFileEpic: RootEpic = ($action) => {
       );
     }),
     catchError((error) => {
-      console.log(error);
       return of(setError('Something went wrong. Try again'));
     })
   );
@@ -95,12 +102,18 @@ export const listenToAllCategoryEpic: RootEpic = ($action) => {
   );
 };
 
-export const newBookEpic: RootEpic = ($action) => {
+export const newBookEpic: RootEpic = ($action, store) => {
   return $action.pipe(
     filter(isOfType(BookTypes.AddBook)),
-    switchMap((action) => {
+    withLatestFrom(store),
+    switchMap(([action, state]) => {
       const { data } = action.payload;
-      return addNewBook(data).pipe(
+      const { user } = state.Auth;
+      const newData = {
+        ...data,
+        userId: user && user.id,
+      };
+      return addNewBook(newData).pipe(
         map(() => setMessage('Book Saved Successfully'))
       );
     }),
@@ -111,8 +124,33 @@ export const newBookEpic: RootEpic = ($action) => {
 export const listenToAllBookEpic: RootEpic = ($action) => {
   return $action.pipe(
     filter(isOfType(BookTypes.ListenToAllBook)),
-    switchMap((action) => {
-      return listenToAllBook().pipe(map((res) => setBooks(res)));
+    switchMap(() => {
+      return listenToAllBook().pipe(
+        switchMap((res) => {
+          return combineLatest(
+            res.map((item) => {
+              if (!item.userId) {
+                return item;
+              }
+              return listenToSpecificUser(item.userId).pipe(
+                map((user) => ({
+                  ...item,
+                  user: {
+                    id: user.id,
+                    email: user.email,
+                    username: user.username,
+                    profilePicture: user.profilePicture,
+                  },
+                }))
+              );
+            })
+          ).pipe(
+            map((response) => {
+              return setBooks(response);
+            })
+          );
+        })
+      );
     }),
     catchError(() => of(setError('Something went wrong. Try again')))
   );

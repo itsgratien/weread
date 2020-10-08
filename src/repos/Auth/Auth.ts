@@ -1,6 +1,8 @@
 import { FireStoreCollections } from '../../utils';
 import firebase from 'firebase';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
+
+const timestamp = firebase.firestore.Timestamp;
 
 export enum Roles {
   Client = 'Client',
@@ -10,7 +12,7 @@ export enum Roles {
 
 export enum Storage {
   Email = 'Email',
-  AccessToken = 'AccessToken'
+  AccessToken = 'AccessToken',
 }
 export interface User {
   id: string;
@@ -18,10 +20,12 @@ export interface User {
   username: string;
   role?: [Roles];
   phoneNumber?: string;
-  avatar?: string;
+  profilePicture?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
-export interface VerifyAuthentication{
+export interface VerifyAuthentication {
   message?: string;
   isAuthenticated: boolean;
 }
@@ -61,6 +65,88 @@ export const signInWithGoogle = (accessToken: string) => {
       })
       .catch(() => {
         observer.error('Something went wrong. Try again');
+      });
+  });
+};
+
+export const listenToCurrentUser = (): Observable<User> => {
+  return new Observable((observer) => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      unsubscribe();
+      if (user) {
+        const { email } = user;
+        return FireStoreCollections.users()
+          .where('email', '==', email)
+          .onSnapshot((snapShot) => {
+            if (snapShot.empty) {
+              observer.error('error');
+            }
+            snapShot.docs.map((doc) => {
+              const { createdAt, updatedAt } = doc.data();
+              const data = {
+                ...(doc.data() as User),
+                id: doc.id,
+                createdAt:
+                  createdAt &&
+                  new timestamp(
+                    createdAt.seconds,
+                    createdAt.nanoseconds
+                  ).toDate(),
+                updatedAt:
+                  updatedAt &&
+                  new timestamp(
+                    updatedAt.seconds,
+                    updatedAt.nanoseconds
+                  ).toDate(),
+              };
+              observer.next(data);
+            });
+          });
+      } else {
+        observer.error('Login to proceed');
+      }
+    });
+  });
+};
+
+export const logout = () => {
+  return from(firebase.auth().signOut());
+};
+
+export const listenToAllUsers = (): Observable<User[]> => {
+  return new Observable((observer) => {
+    FireStoreCollections.users().onSnapshot((snapShot) => {
+      const data = snapShot.docs.map((doc) => {
+        const { createdAt, updatedAt } = doc.data();
+        return {
+          ...(doc.data() as User),
+          id: doc.id,
+          createdAt:
+            createdAt &&
+            new timestamp(createdAt.seconds, createdAt.nanoseconds).toDate(),
+          updatedAt:
+            updatedAt &&
+            new timestamp(updatedAt.seconds, updatedAt.nanoseconds).toDate(),
+        };
+      });
+      observer.next(data);
+    });
+  });
+};
+
+export const listenToSpecificUser = (id: string): Observable<User> => {
+  return new Observable((observer) => {
+    FireStoreCollections.users()
+      .doc(id)
+      .get()
+      .then((snapshot) => {
+        if (!snapshot.exists) {
+          observer.next(undefined);
+        }
+        observer.next({
+          ...(snapshot.data() as User),
+          id: snapshot.id,
+        });
       });
   });
 };

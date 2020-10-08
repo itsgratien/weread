@@ -1,42 +1,106 @@
 import React, { FC, useEffect } from 'react';
-import { Text, Button } from '@ui-kitten/components';
+import { Text } from '@ui-kitten/components';
+import { View, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { RootState, logout } from '../../redux';
 import { connect } from 'react-redux';
+import { RootState, listenToAllBook, listenToAllCategory } from '../../redux';
 import { Routes } from '../../utils/Routes';
-import { Loading, Layout } from '../../components';
+import { Loading, Layout, Header } from '../../components';
+import { Category, Book } from '../../repos';
+import { styles } from './styles';
+import { avatar } from '../../assets';
 
 interface Props {
-  isAuthenticated?: boolean;
-  logout: typeof logout;
   loading?: boolean;
+  listenToAllBook: typeof listenToAllBook;
+  listenToAllCategory: typeof listenToAllCategory;
+  categories?: Category[];
+  books?: Book[];
 }
+
 const Home: FC<Props> = (props) => {
-  const { logout, isAuthenticated, loading } = props;
+  const {
+    loading,
+    listenToAllBook,
+    listenToAllCategory,
+    categories,
+    books,
+  } = props;
 
   const { navigate } = useNavigation();
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate(Routes.SocialAuth);
-    }
-  }, [isAuthenticated]);
+    listenToAllBook();
+    listenToAllCategory();
+  }, [listenToAllBook, listenToAllCategory]);
 
-  if (loading) {
+  if (loading && loading === true) {
     return <Loading />;
   }
 
   return (
     <Layout>
-      <Text>Welcome home</Text>
-      <Button onPress={() => logout()}>Logout</Button>
+      <Header />
+      <ScrollView style={styles.container}>
+        {categories && categories.length > 0 && (
+          <View style={styles.category}>
+            {categories.map((item, index) => (
+              <TouchableOpacity style={styles.categoryList} key={index}>
+                <Text style={styles.categoryName}>{item.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+        {books && books.length > 0 && (
+          <View style={styles.books}>
+            {books.map((item, index) => (
+              <TouchableOpacity style={styles.book} key={index}>
+                <View style={styles.bookContainer}>
+                  <View style={styles.bookImageView}>
+                    <Image
+                      source={{
+                        uri: item.cover,
+                      }}
+                      style={styles.bookImage}
+                    />
+                  </View>
+                  <View style={styles.authorView}>
+                    {item.user && item.user.profilePicture ? (
+                      <Image
+                        source={{
+                          uri: item.user.profilePicture,
+                        }}
+                        style={styles.authorAvatar}
+                      />
+                    ) : (
+                      <Image source={avatar} style={styles.authorAvatar} />
+                    )}
+                    <View style={{ width: 80 }}>
+                      <Text style={styles.authorName}>
+                        {item.user && item.user.username}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={{ marginTop: 10, marginLeft: 10 }}>
+                  <Text style={styles.bookTitle}>{item.title}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+      </ScrollView>
     </Layout>
   );
 };
 
 const mapStateToProps = (state: RootState) => {
-  const { isAuthenticated, loading } = state.Auth;
+  const { categories, books, loading } = state.Book;
 
-  return { isAuthenticated, loading };
+  return { loading, categories, books };
 };
-export default connect(mapStateToProps, { logout })(Home);
+
+export default connect(mapStateToProps, {
+  listenToAllBook,
+  listenToAllCategory,
+})(Home);

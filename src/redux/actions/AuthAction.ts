@@ -1,5 +1,5 @@
 import { action, ActionType } from 'typesafe-actions';
-import { VerifyAuthentication } from '../../repos';
+import { VerifyAuthentication, User } from '../../repos';
 
 export enum AuthTypes {
   Welcome = 'AuthTypes/Welcome',
@@ -10,6 +10,7 @@ export enum AuthTypes {
   SetAuthentication = 'AuthTypes/SetAuthentication',
   Logout = 'AuthTypes/Logout',
   VerifyAuthentication = 'AuthTypes/VerifyAuthentication',
+  SetCurrentUser = 'AuthTypes/SetCurrentUser',
 }
 
 export const welcome = () => action(AuthTypes.Welcome);
@@ -34,6 +35,9 @@ export const logout = () => action(AuthTypes.Logout);
 export const verifyAuthentication = () =>
   action(AuthTypes.VerifyAuthentication);
 
+export const setCurrentUser = (user: User) =>
+  action(AuthTypes.SetCurrentUser, { user });
+
 const authActions = {
   welcome,
   setMessage,
@@ -42,6 +46,7 @@ const authActions = {
   setAuthentication,
   logout,
   verifyAuthentication,
+  setCurrentUser,
 };
 
 export type AuthAction = ActionType<typeof authActions>;
