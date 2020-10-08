@@ -9,7 +9,7 @@ import { default as theme } from '../theme.json';
 import { default as mapping } from '../mapping.json';
 import { RootState, verifyAuthentication } from './redux';
 import { Routes } from './utils';
-import { SocialAuth, Home, AddBook } from './screens';
+import { SocialAuth, Home, AddBook, Search } from './screens';
 import { ImageUpload, AudioUpload, PdfUpload } from './components';
 import { styles } from './styles';
 import { Image } from 'react-native';
@@ -84,6 +84,16 @@ const Main: FC<Props> = (props) => {
                   headerStyle: styles.headerStyle,
                 }}
               />
+              <Screen
+                name={Routes.Search}
+                component={Search}
+                options={{
+                  title: 'Search',
+                  headerTitleStyle: styles.headerTitle,
+                  headerBackImage: () => <Image source={arrowBack} />,
+                  headerStyle: styles.headerStyle,
+                }}
+              />
             </>
           ) : (
             <>
@@ -105,6 +115,4 @@ const mapStateToProps = (state: RootState) => {
   return { message, isAuthenticated };
 };
 
-export default connect(mapStateToProps, { verifyAuthentication })(
-  Main
-);
+export default connect(mapStateToProps, { verifyAuthentication })(Main);
