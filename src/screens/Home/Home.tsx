@@ -54,7 +54,11 @@ const Home: FC<Props> = (props) => {
         {books && books.length > 0 && (
           <View style={styles.books}>
             {books.map((item, index) => (
-              <TouchableOpacity style={styles.book} key={index}>
+              <TouchableOpacity
+                style={styles.book}
+                key={index}
+                onPress={() => navigate(Routes.BookDetail, { id: item.id })}
+              >
                 <View style={styles.bookContainer}>
                   <View style={styles.bookImageView}>
                     <Image

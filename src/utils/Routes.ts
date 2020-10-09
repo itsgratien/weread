@@ -7,6 +7,11 @@ export const Routes = {
   AudioUpload: 'AudioUpload',
   PdfUpload: 'PdfUpload',
   Search: 'Search',
+  BookDetail: 'BookDetail',
 };
 
-export type RootStackParamList = {};
+export type RootStackParamList = {
+  BookDetail: {
+    id: string;
+  };
+};

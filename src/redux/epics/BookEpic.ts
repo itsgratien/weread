@@ -199,7 +199,6 @@ export const searchBookEpic: RootEpic = ($action) => {
       );
     }),
     catchError((error) => {
-      console.log(error);
       return of(setError('Something went wrong try again'));
     })
   );

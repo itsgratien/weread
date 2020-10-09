@@ -5,15 +5,17 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider } from '@ui-kitten/components';
+import { Image, TouchableHighlight } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { default as theme } from '../theme.json';
 import { default as mapping } from '../mapping.json';
 import { RootState, verifyAuthentication } from './redux';
 import { Routes } from './utils';
-import { SocialAuth, Home, AddBook, Search } from './screens';
+import { SocialAuth, Home, AddBook, Search, BookDetail } from './screens';
 import { ImageUpload, AudioUpload, PdfUpload } from './components';
 import { styles } from './styles';
-import { Image } from 'react-native';
 import { arrowBack } from './assets';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 interface Props {
   message?: string;
   isAuthenticated?: boolean;
@@ -82,6 +84,21 @@ const Main: FC<Props> = (props) => {
                   headerTitleStyle: styles.headerTitle,
                   headerBackImage: () => <Image source={arrowBack} />,
                   headerStyle: styles.headerStyle,
+                }}
+              />
+              <Screen
+                name={Routes.BookDetail}
+                component={BookDetail}
+                options={{
+                  title: '',
+                  headerTitleStyle: styles.headerTitle,
+                  headerBackImage: () => <Image source={arrowBack} />,
+                  headerStyle: styles.headerStyle,
+                  headerRight: () => (
+                    <TouchableOpacity style={styles.headerRightStyle}>
+                      <Ionicons size={30} name='md-open' />
+                    </TouchableOpacity>
+                  ),
                 }}
               />
               <Screen

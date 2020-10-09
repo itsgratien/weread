@@ -3,12 +3,14 @@ import { connect } from 'react-redux';
 import { View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { Input, Text, Spinner } from '@ui-kitten/components';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import { Layout } from '../../components';
 import { RootState, search } from '../../redux';
 import { styles } from './styles';
 import { Fonts } from '../../theme';
 import { Book } from '../../repos';
 import { avatar } from '../../assets';
+import { Routes } from '../../utils';
 
 interface Props {
   search: typeof search;
@@ -20,6 +22,8 @@ const Search: FC<Props> = (props) => {
   const [query = '', setQuery] = useState<string>();
 
   const { loading, search, searchResult } = props;
+
+  const { navigate } = useNavigation();
 
   const searchBook = useCallback(
     (value: string) => {
@@ -66,7 +70,11 @@ const Search: FC<Props> = (props) => {
       {searchResult && searchResult.length > 0 && (
         <ScrollView style={{ padding: 23, paddingTop: 0 }}>
           {searchResult.map((item, index) => (
-            <TouchableOpacity style={styles.bookItem} key={index}>
+            <TouchableOpacity
+              style={styles.bookItem}
+              key={index}
+              onPress={() => navigate(Routes.BookDetail, { id: item.id })}
+            >
               {item.cover && (
                 <Image
                   source={{
