@@ -119,7 +119,9 @@ export const newBookEpic: RootEpic = ($action, store) => {
         map(() => setMessage('Book Saved Successfully'))
       );
     }),
-    catchError(() => of(setError('Something went wrong. Try again')))
+    catchError((error) => {
+      return of(setError('Something went wrong. Try again'));
+    })
   );
 };
 
