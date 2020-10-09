@@ -26,8 +26,8 @@ export const BookSchema = object()
     userId: string().optional(),
     user: object()
       .shape({
-        username: string().required('username is required'),
-        email: string().required('email is required'),
+        username: string().optional(),
+        email: string().optional(),
         profilePicture: string().optional(),
       })
       .optional(),
@@ -56,9 +56,15 @@ export const listenToAllCategory = (): Observable<Category[]> => {
 };
 
 export const addNewBook = (data: Book) => {
+  const { userId, category, pdf, audio, cover, title } = data;
   return from(
     FireStoreCollections.books().add({
-      ...data,
+      title,
+      userId,
+      category,
+      pdf,
+      audio,
+      cover,
       createdAt: firestore.FieldValue.serverTimestamp(),
       updatedAt: firestore.FieldValue.serverTimestamp(),
     })
@@ -76,5 +82,22 @@ export const listenToAllBook = (): Observable<Book[]> => {
       });
       observer.next(items);
     });
+  });
+};
+
+export const searchBook = (value: string): Observable<Book[]> => {
+  return new Observable((observer) => {
+    return FireStoreCollections.books()
+      .where('title', '>=', value)
+      .where('title', '<=', value + '\uf8ff')
+      .onSnapshot((data) => {
+        const items = data.docs.map((doc) => {
+          return {
+            id: doc.id,
+            ...(doc.data() as Book),
+          };
+        });
+        observer.next(items);
+      });
   });
 };

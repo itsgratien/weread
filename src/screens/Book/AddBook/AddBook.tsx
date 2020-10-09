@@ -40,6 +40,7 @@ interface Props {
   listenToAllCategory: typeof listenToAllCategory;
   categories?: Category[];
   setError: typeof setError;
+  loading?: boolean;
   message?: string;
 }
 
@@ -49,8 +50,6 @@ const AddBook: FC<Props> = (props) => {
   const [categoryId = '', setCategoryId] = useState<string>();
 
   const [categoryName, setCategoryName] = useState<string>();
-
-  const [loading = false, setLoading] = useState<boolean>();
 
   const [selectedIndex, setSelectedIndex] = useState<IndexPath>(
     new IndexPath(0)
@@ -64,6 +63,8 @@ const AddBook: FC<Props> = (props) => {
     listenToAllCategory,
     categories,
     setError,
+    loading,
+    message,
   } = props;
 
   const navigation = useNavigation();
@@ -72,8 +73,15 @@ const AddBook: FC<Props> = (props) => {
     listenToAllCategory();
   }, [listenToAllCategory]);
 
+  useEffect(() => {
+    if (message) {
+      setTitle('');
+      setCategoryId('');
+      setCategoryName(undefined);
+    }
+  }, [message]);
+
   const saveBook = async () => {
-    setLoading(true);
     try {
       const validate = await BookSchema.validate({
         title,
@@ -89,7 +97,6 @@ const AddBook: FC<Props> = (props) => {
     } catch (error) {
       setError(error);
     }
-    setLoading(false);
   };
 
   if (!categories) {
@@ -237,9 +244,9 @@ const AddBook: FC<Props> = (props) => {
 };
 
 const mapStateToProps = (state: RootState) => {
-  const { coverImage, audioBook, pdfBook, categories } = state.Book;
+  const { coverImage, audioBook, pdfBook, categories, loading } = state.Book;
   const { message } = state.Auth;
-  return { coverImage, audioBook, pdfBook, categories, message };
+  return { coverImage, audioBook, pdfBook, categories, loading, message };
 };
 export default connect(mapStateToProps, {
   addBook,

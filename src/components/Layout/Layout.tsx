@@ -18,7 +18,7 @@ export const Layout: FC = (props) => {
           <TouchableOpacity onPress={() => navigate(Routes.AddBook)}>
             <Ionicons size={40} name='ios-add-circle-outline' />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigate(Routes.Search)}>
             <Ionicons name='ios-search' size={40} />
           </TouchableOpacity>
         </View>

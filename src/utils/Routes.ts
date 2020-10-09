@@ -6,6 +6,7 @@ export const Routes = {
   ImageUpload: 'ImageUpload',
   AudioUpload: 'AudioUpload',
   PdfUpload: 'PdfUpload',
+  Search: 'Search',
 };
 
 export type RootStackParamList = {};

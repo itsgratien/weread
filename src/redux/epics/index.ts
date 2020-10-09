@@ -15,6 +15,7 @@ import {
   listenToAllBookEpic,
   newBookEpic,
   listenToAllCategoryEpic,
+  searchBookEpic
 } from './BookEpic';
 
 export default combineEpics(
@@ -28,7 +29,8 @@ export default combineEpics(
   deleteBookFileEpic,
   listenToAllBookEpic,
   newBookEpic,
-  listenToAllCategoryEpic
+  listenToAllCategoryEpic,
+  searchBookEpic
 );
 
 export type RootEpic = Epic<RootAction, RootAction, RootState>;

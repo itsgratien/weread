@@ -9,6 +9,7 @@ import {
   setCategories,
   setBooks,
   setMessage,
+  setSearchResult,
 } from '..';
 import {
   map,
@@ -26,8 +27,9 @@ import {
   listenToAllCategory,
   listenToAllBook,
   addNewBook,
-  listenToAllUsers,
   listenToSpecificUser,
+  searchBook,
+  Book,
 } from '../../repos';
 
 export const uploadImageEpic: RootEpic = ($action) => {
@@ -117,7 +119,9 @@ export const newBookEpic: RootEpic = ($action, store) => {
         map(() => setMessage('Book Saved Successfully'))
       );
     }),
-    catchError(() => of(setError('Something went wrong. Try again')))
+    catchError((error) => {
+      return of(setError('Something went wrong. Try again'));
+    })
   );
 };
 
@@ -127,6 +131,9 @@ export const listenToAllBookEpic: RootEpic = ($action) => {
     switchMap(() => {
       return listenToAllBook().pipe(
         switchMap((res) => {
+          if (res.length <= 0) {
+            return of(setBooks([]));
+          }
           return combineLatest(
             res.map((item) => {
               if (!item.userId) {
@@ -146,12 +153,54 @@ export const listenToAllBookEpic: RootEpic = ($action) => {
             })
           ).pipe(
             map((response) => {
-              return setBooks(response);
+              return setBooks(response as Book[]);
             })
           );
         })
       );
     }),
     catchError(() => of(setError('Something went wrong. Try again')))
+  );
+};
+
+export const searchBookEpic: RootEpic = ($action) => {
+  return $action.pipe(
+    filter(isOfType(BookTypes.Search)),
+    switchMap((action) => {
+      const { data } = action.payload;
+      return searchBook(data).pipe(
+        switchMap((response) => {
+          if (response.length <= 0) {
+            return of(setSearchResult([]));
+          }
+          return combineLatest(
+            response.map((item) => {
+              if (!item.userId) {
+                return item;
+              }
+              return listenToSpecificUser(item.userId).pipe(
+                map((user) => ({
+                  ...item,
+                  user: {
+                    id: user.id,
+                    email: user.email,
+                    username: user.username,
+                    profilePicture: user.profilePicture,
+                  },
+                }))
+              );
+            })
+          ).pipe(
+            map((response) => {
+              return setSearchResult(response as Book[]);
+            })
+          );
+        })
+      );
+    }),
+    catchError((error) => {
+      console.log(error);
+      return of(setError('Something went wrong try again'));
+    })
   );
 };
