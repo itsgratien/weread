@@ -15,6 +15,8 @@ export enum BookTypes {
   SetDeleteFile = 'BookActionType/SetDeleteFile',
   ListenToAllCategory = 'BookActionType/ListenToAllCategory',
   SetCategories = 'BookActionType/SetCategories',
+  Search = 'BookActionType/Search',
+  SetSearchResult = 'BookActionType/SetSearchResult',
 }
 
 export const listenToAllBook = () => action(BookTypes.ListenToAllBook);
@@ -50,6 +52,12 @@ export const listenToAllCategory = () => action(BookTypes.ListenToAllCategory);
 export const setCategories = (data: Category[]) =>
   action(BookTypes.SetCategories, { data });
 
+export const search = (value: string) =>
+  action(BookTypes.Search, { data: value });
+
+export const setSearchResult = (data: Book[]) =>
+  action(BookTypes.SetSearchResult, { data });
+
 const bookActions = {
   listenToAllBook,
   setBooks,
@@ -64,6 +72,8 @@ const bookActions = {
   setDeleteFile,
   listenToAllCategory,
   setCategories,
+  search,
+  setSearchResult,
 };
 
 export type BookAction = ActionType<typeof bookActions>;

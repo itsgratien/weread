@@ -9,6 +9,7 @@ export interface BookState {
   readonly pdfBook?: UploadPath;
   readonly categories?: Category[];
   readonly books?: Book[];
+  readonly searchResult?: Book[];
 }
 
 const initialState: BookState = {};
@@ -28,6 +29,7 @@ export const bookReducer = (state = initialState, action: BookAction) => {
       case BookTypes.ListenToAllCategory:
       case BookTypes.ListenToAllBook:
       case BookTypes.AddBook:
+      case BookTypes.Search:
         draft.loading = true;
         break;
 
@@ -53,6 +55,11 @@ export const bookReducer = (state = initialState, action: BookAction) => {
       case BookTypes.SetCategories:
         draft.categories = action.payload.data;
         draft.loading = false;
+        break;
+
+      case BookTypes.SetSearchResult:
+        draft.loading = false;
+        draft.searchResult = action.payload.data;
         break;
 
       default:

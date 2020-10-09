@@ -78,3 +78,20 @@ export const listenToAllBook = (): Observable<Book[]> => {
     });
   });
 };
+
+export const searchBook = (value: string): Observable<Book[]> => {
+  return new Observable((observer) => {
+    return FireStoreCollections.books()
+      .where('title', '>=', value)
+      .where('title', '<=', value + '\uf8ff')
+      .onSnapshot((data) => {
+        const items = data.docs.map((doc) => {
+          return {
+            id: doc.id,
+            ...(doc.data() as Book),
+          };
+        });
+        observer.next(items);
+      });
+  });
+};
