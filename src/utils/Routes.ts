@@ -8,10 +8,14 @@ export const Routes = {
   PdfUpload: 'PdfUpload',
   Search: 'Search',
   BookDetail: 'BookDetail',
+  ViewPdf: 'ViewPdf'
 };
 
 export type RootStackParamList = {
   BookDetail: {
     id: string;
   };
+  ViewPdf: {
+    uri: string;
+  }
 };

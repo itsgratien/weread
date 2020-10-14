@@ -47,6 +47,7 @@
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-observable": "^1.2.0",
+    "rn-pdf-reader-js": "^4.1.1",
     "rxjs": "^6.6.3",
     "typesafe-actions": "^5.1.0",
     "yup": "^0.29.3"
