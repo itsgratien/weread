@@ -17,6 +17,8 @@ export enum BookTypes {
   SetCategories = 'BookActionType/SetCategories',
   Search = 'BookActionType/Search',
   SetSearchResult = 'BookActionType/SetSearchResult',
+  ListenToSpecificBook = 'BookActionType/ListenToSpecificBook',
+  SetSpecificBook = 'BookActionType/SetSpecificBook',
 }
 
 export const listenToAllBook = () => action(BookTypes.ListenToAllBook);
@@ -58,6 +60,12 @@ export const search = (value: string) =>
 export const setSearchResult = (data: Book[]) =>
   action(BookTypes.SetSearchResult, { data });
 
+export const listenToSpecificBook = (id: string) =>
+  action(BookTypes.ListenToSpecificBook, { id });
+
+export const setSpecificBook = (data: Book) =>
+  action(BookTypes.SetSpecificBook, { data });
+
 const bookActions = {
   listenToAllBook,
   setBooks,
@@ -74,6 +82,8 @@ const bookActions = {
   setCategories,
   search,
   setSearchResult,
+  listenToSpecificBook,
+  setSpecificBook,
 };
 
 export type BookAction = ActionType<typeof bookActions>;
