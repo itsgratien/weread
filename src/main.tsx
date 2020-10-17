@@ -34,6 +34,18 @@ const Main: FC<Props> = (props) => {
     verifyAuthentication();
   }, [verifyAuthentication]);
 
+  const BookDetailHeaderRight = ({ uri }: { uri: string }) => {
+    const navigation = useNavigation();
+    return (
+      <TouchableOpacity
+        style={styles.headerRightStyle}
+        onPress={() => navigation.navigate(Routes.ViewPdf, { uri })}
+      >
+        <Ionicons size={30} name='md-open' />
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <ApplicationProvider
       {...eva}
@@ -99,11 +111,7 @@ const Main: FC<Props> = (props) => {
                   headerStyle: styles.headerStyle,
                   headerRight: () => {
                     if (currentBook && currentBook.pdf) {
-                      return (
-                        <TouchableOpacity style={styles.headerRightStyle}>
-                          <Ionicons size={30} name='md-open' />
-                        </TouchableOpacity>
-                      );
+                      return <BookDetailHeaderRight uri={currentBook.pdf} />;
                     }
                   },
                 }}

@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
+import { Audio } from 'expo-av';
 import Slider from '@react-native-community/slider';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { Layout, Loading } from '../../../components';
@@ -15,7 +16,7 @@ import { RootState, listenToSpecificBook } from '../../../redux';
 import { styles } from './styles';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../../../theme';
-import { RootStackParamList } from '../../../utils';
+import { RootStackParamList, convertToTime } from '../../../utils';
 import { Book } from '../../../repos';
 import { avatar } from '../../../assets';
 
@@ -29,6 +30,14 @@ interface Props {
 const window = Dimensions.get('window');
 
 const BookDetail: FC<Props> = (props) => {
+  const [play = false, setPlay] = useState<boolean>();
+
+  const [position, setPosition] = useState<number>();
+
+  const [duration, setDuration] = useState<number>();
+
+  const [audioInstance, setAudioInstance] = useState<Audio.Sound | undefined>();
+
   const { routeProps, listenToSpecificBook, currentBook, loading } = props;
 
   const imageHeight = window.height / 2.5;
@@ -41,8 +50,67 @@ const BookDetail: FC<Props> = (props) => {
     }
   }, [listenToSpecificBook]);
 
+  useEffect(() => {
+    if (currentBook && currentBook.audio) {
+      setupAudio(currentBook.audio);
+    }
+  }, [currentBook]);
+
+  useEffect(() => {
+    if (audioInstance) {
+      getAudioPosition(audioInstance);
+    }
+  }, []);
+
   if (loading) {
     return <Loading />;
+  }
+
+  const setupAudio = async (uri: string) => {
+    try {
+      const soundObject = new Audio.Sound();
+
+      const loadSound = await soundObject.loadAsync(
+        { uri },
+        { shouldPlay: false }
+      );
+      if (loadSound.isLoaded) {
+        setAudioInstance(soundObject);
+        const audioStatus = await soundObject.getStatusAsync();
+        if (audioStatus.isLoaded) {
+          setDuration(audioStatus.playableDurationMillis);
+          setPosition(audioStatus.positionMillis);
+        }
+      }
+    } catch (error) {}
+  };
+
+  const getAudioPosition = async (audio: Audio.Sound) => {
+    try {
+      const audioStatus = await audio.getStatusAsync();
+      if (audioStatus.isLoaded) {
+        setPosition(audioStatus.positionMillis);
+      }
+      return;
+    } catch (error) {}
+  };
+
+  const handlePlayPause = async () => {
+    try {
+      if (audioInstance) {
+        if (play === false) {
+          await audioInstance.playAsync();
+        } else {
+          await audioInstance.pauseAsync();
+        }
+        setPlay(!play);
+        return;
+      }
+    } catch (error) {}
+  };
+
+  if (!audioInstance) {
+    return null;
   }
 
   return (
@@ -60,37 +128,44 @@ const BookDetail: FC<Props> = (props) => {
             </View>
           )}
           <View style={styles.details}>
-            <TouchableOpacity>
-              <Ionicons size={40} name='ios-download' />
-            </TouchableOpacity>
-            <View style={styles.sliderView}>
-              <TouchableOpacity>
-                <Ionicons
-                  size={50}
-                  name='ios-play-circle'
-                  color={Colors.primary}
-                />
-              </TouchableOpacity>
-              <Slider
-                minimumValue={0}
-                style={styles.slider}
-                thumbTintColor={Colors.primary}
-                minimumTrackTintColor={Colors.black}
-              />
-
-              <View style={styles.timeView}>
-                <Text style={{ marginTop: 5, ...styles.timeText }}>00:00</Text>
-                <Text
-                  style={{
-                    marginBottom: 'auto',
-                    bottom: -5,
-                    ...styles.timeText,
-                  }}
+            {currentBook.audio && (
+              <View style={styles.sliderView}>
+                <TouchableOpacity
+                  onPress={handlePlayPause}
+                  style={styles.playPause}
                 >
-                  06:00
-                </Text>
+                  <Ionicons
+                    size={30}
+                    name={play ? 'ios-pause' : 'ios-play'}
+                    color={Colors.white}
+                  />
+                </TouchableOpacity>
+                <Slider
+                  minimumValue={0}
+                  style={styles.slider}
+                  thumbTintColor={Colors.primary}
+                  minimumTrackTintColor={Colors.black}
+                  maximumValue={duration ? duration : 0}
+                />
+
+                <View style={styles.timeView}>
+                  <Text style={{ marginTop: 5, ...styles.timeText }}>
+                    {position && position === 0
+                      ? '00:00:00'
+                      : convertToTime(position)}
+                  </Text>
+                  <Text
+                    style={{
+                      marginBottom: 'auto',
+                      bottom: -5,
+                      ...styles.timeText,
+                    }}
+                  >
+                    {duration && convertToTime(duration)}
+                  </Text>
+                </View>
               </View>
-            </View>
+            )}
             <View style={{ marginTop: 20 }}>
               {currentBook.createdAt && (
                 <Text style={styles.authorName}>

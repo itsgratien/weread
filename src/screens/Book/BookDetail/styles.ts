@@ -51,4 +51,12 @@ export const styles = StyleSheet.create({
     height: 40,
     borderRadius: 100,
   },
+  playPause: {
+    backgroundColor: Colors.primary,
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

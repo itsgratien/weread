@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import PdfReader from 'rn-pdf-reader-js';
-import { SafeAreaView, ScrollView, Text } from 'react-native';
+import { SafeAreaView, Text, View } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../../utils';
 import { Colors, Fonts } from '../../../theme';
@@ -21,8 +21,11 @@ const ViewPdf: FC<Props> = (props) => {
   }
   
   return (
-    <SafeAreaView key='base' style={{ flex: 1, backgroundColor: 'white' }}>
-      <ScrollView style={{ backgroundColor: 'white' }}>
+    <SafeAreaView
+      key='base'
+      style={{ flex: 1, backgroundColor: 'white', justifyContent: 'center' }}
+    >
+      <View style={{ backgroundColor: 'white', flexGrow: 1 }}>
         {fileError && (
           <Text
             style={{ fontFamily: Fonts.tomorrow.medium, color: Colors.primary }}
@@ -30,20 +33,16 @@ const ViewPdf: FC<Props> = (props) => {
             {fileError}
           </Text>
         )}
-        {!fileError && (
-          <PdfReader
-            source={{ uri: params.uri }}
-            style={{ backgroundColor: 'white' }}
-            noLoader={true}
-            onError={(error) => {
-              if (error) setFileError('Failed to display file');
-            }}
-            onLoad={() => {
-              setFileError(undefined);
-            }}
-          />
-        )}
-      </ScrollView>
+        <PdfReader
+          source={{ uri: params.uri }}
+          onError={(error) => {
+            if (error) setFileError('Failed to display file');
+          }}
+          onLoad={() => {
+            setFileError(undefined);
+          }}
+        />
+      </View>
     </SafeAreaView>
   );
 };
