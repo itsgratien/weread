@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useCallback, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Text } from '@ui-kitten/components';
 import {
   ScrollView,
@@ -11,10 +11,10 @@ import { connect } from 'react-redux';
 import { Audio } from 'expo-av';
 import Slider from '@react-native-community/slider';
 import { useRoute, RouteProp } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 import { Layout, Loading } from '../../../components';
 import { RootState, listenToSpecificBook } from '../../../redux';
 import { styles } from './styles';
-import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../../../theme';
 import { RootStackParamList, convertToTime } from '../../../utils';
 import { Book } from '../../../repos';
@@ -58,9 +58,9 @@ const BookDetail: FC<Props> = (props) => {
 
   useEffect(() => {
     if (audioInstance) {
-      getAudioPosition(audioInstance);
+      getAudioPosition();
     }
-  }, []);
+  });
 
   if (loading) {
     return <Loading />;
@@ -85,13 +85,14 @@ const BookDetail: FC<Props> = (props) => {
     } catch (error) {}
   };
 
-  const getAudioPosition = async (audio: Audio.Sound) => {
+  const getAudioPosition = async () => {
     try {
-      const audioStatus = await audio.getStatusAsync();
-      if (audioStatus.isLoaded) {
-        setPosition(audioStatus.positionMillis);
+      if (audioInstance) {
+        const audioStatus = await audioInstance.getStatusAsync();
+        if (audioStatus.isLoaded) {
+          setPosition(audioStatus.positionMillis);
+        }
       }
-      return;
     } catch (error) {}
   };
 
@@ -100,11 +101,21 @@ const BookDetail: FC<Props> = (props) => {
       if (audioInstance) {
         if (play === false) {
           await audioInstance.playAsync();
+          return;
         } else {
           await audioInstance.pauseAsync();
+          return;
         }
         setPlay(!play);
-        return;
+      }
+    } catch (error) {}
+  };
+
+  const forwardBackwardAudio = async (val: number) => {
+    try {
+      if (audioInstance) {
+        await audioInstance.setPositionAsync(val);
+        setPosition(val);
       }
     } catch (error) {}
   };
@@ -146,6 +157,8 @@ const BookDetail: FC<Props> = (props) => {
                   thumbTintColor={Colors.primary}
                   minimumTrackTintColor={Colors.black}
                   maximumValue={duration ? duration : 0}
+                  onSlidingComplete={(val) => forwardBackwardAudio(val)}
+                  value={position}
                 />
 
                 <View style={styles.timeView}>
