@@ -3,6 +3,7 @@ import { FireStoreCollections } from '../../utils';
 import { Observable, from } from 'rxjs';
 import { object, string, date, InferType } from 'yup';
 
+
 export interface Category {
   id: string;
   name: string;
@@ -101,3 +102,17 @@ export const searchBook = (value: string): Observable<Book[]> => {
       });
   });
 };
+
+export const listenToSpecificBook = (id: string): Observable<Book>=>{
+  return new Observable((observer)=>{
+    return FireStoreCollections.books().doc(id).onSnapshot((snapShot)=>{
+      const { createdAt, updatedAt } = snapShot.data();
+      observer.next({
+        ...snapShot.data() as Book,
+        id: snapShot.id,
+        createdAt: createdAt && new firestore.Timestamp(createdAt.seconds, createdAt.nanoseconds).toDate(),
+        updatedAt: updatedAt && new firestore.Timestamp(updatedAt.seconds, updatedAt.nanoseconds).toDate(),
+      })
+    })
+  })
+}

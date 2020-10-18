@@ -10,6 +10,7 @@ import {
   setBooks,
   setMessage,
   setSearchResult,
+  setSpecificBook,
 } from '..';
 import {
   map,
@@ -30,6 +31,7 @@ import {
   listenToSpecificUser,
   searchBook,
   Book,
+  listenToSpecificBook,
 } from '../../repos';
 
 export const uploadImageEpic: RootEpic = ($action) => {
@@ -119,7 +121,7 @@ export const newBookEpic: RootEpic = ($action, store) => {
         map(() => setMessage('Book Saved Successfully'))
       );
     }),
-    catchError((error) => {
+    catchError(() => {
       return of(setError('Something went wrong. Try again'));
     })
   );
@@ -198,8 +200,43 @@ export const searchBookEpic: RootEpic = ($action) => {
         })
       );
     }),
-    catchError((error) => {
-      console.log(error);
+    catchError(() => {
+      return of(setError('Something went wrong try again'));
+    })
+  );
+};
+
+export const listenToSpecificBookEpic: RootEpic = ($action) => {
+  return $action.pipe(
+    filter(isOfType(BookTypes.ListenToSpecificBook)),
+    switchMap((action) => {
+      const { id } = action.payload;
+      return listenToSpecificBook(id).pipe(
+        switchMap((response) => {
+          if (response.userId) {
+            return combineLatest(
+              listenToSpecificUser(response.userId).pipe(
+                map((user) => ({
+                  ...response,
+                  user: {
+                    id: user.id,
+                    email: user.email,
+                    username: user.username,
+                    profilePicture: user.profilePicture,
+                  },
+                }))
+              )
+            ).pipe(
+              map((response) => {
+                return setSpecificBook(response[0]);
+              })
+            );
+          }
+          return of(setSpecificBook(response));
+        })
+      );
+    }),
+    catchError(() => {
       return of(setError('Something went wrong try again'));
     })
   );

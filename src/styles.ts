@@ -13,4 +13,7 @@ export const styles = StyleSheet.create({
     borderColor: 'white',
     borderWidth: 0,
   },
+  headerRightStyle: {
+    marginRight: 23
+  }
 });

@@ -10,6 +10,7 @@ export interface BookState {
   readonly categories?: Category[];
   readonly books?: Book[];
   readonly searchResult?: Book[];
+  readonly currentBook?: Book;
 }
 
 const initialState: BookState = {};
@@ -33,6 +34,7 @@ export const bookReducer = (
       case BookTypes.ListenToAllBook:
       case BookTypes.AddBook:
       case BookTypes.Search:
+      case BookTypes.ListenToSpecificBook:
         draft.loading = true;
         break;
 
@@ -73,6 +75,11 @@ export const bookReducer = (
 
       case AuthTypes.SetError:
         draft.loading = false;
+        break;
+
+      case BookTypes.SetSpecificBook:
+        draft.loading = false;
+        draft.currentBook = action.payload.data;
         break;
 
       default:

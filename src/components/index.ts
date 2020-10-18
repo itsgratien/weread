@@ -3,5 +3,5 @@ export * from './Layout';
 export * from './ImageUpload';
 export * from './BottomUploadMenu';
 export * from './AudioUpload';
-export * from './PdfUpload';
+export * from './Pdf';
 export * from './Header';

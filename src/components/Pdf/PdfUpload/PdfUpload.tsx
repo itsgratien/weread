@@ -1,16 +1,16 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import { Text, Button } from '@ui-kitten/components';
 import { connect } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { WebView } from 'react-native-webview';
 import * as DocumentPicker from 'expo-document-picker';
-import { RootState, uploadPdf, deleteFile, setError } from '../../redux';
+import { RootState, uploadPdf, deleteFile, setError } from '../../../redux';
 import { styles } from './styles';
-import { UploadPath, PathReference } from '../../repos';
-import { BottomUploadMenu } from '../BottomUploadMenu';
-import { Loading } from '../Loading';
+import { UploadPath, PathReference } from '../../../repos';
+import { BottomUploadMenu } from '../../BottomUploadMenu';
+import { Loading } from '../../Loading';
+import PdfReader from 'rn-pdf-reader-js';
 
 interface Props {
   uploadPdf: typeof uploadPdf;
@@ -21,6 +21,8 @@ interface Props {
 }
 
 const PdfUpload: FC<Props> = (props) => {
+  const [fileError, setFileError] = useState<string>();
+
   const { loading, uploadPdf, setError, pdfBook, deleteFile } = props;
 
   const { goBack } = useNavigation();
@@ -64,7 +66,16 @@ const PdfUpload: FC<Props> = (props) => {
     }
     return (
       <View style={styles.pdfView}>
-        <WebView source={{ uri: pdfBook.url }} />
+        <PdfReader
+          source={{ uri: pdfBook.url }}
+          noLoader={true}
+          onError={(error) => {
+            if (error) setFileError('Failed to display file');
+          }}
+          onLoad={() => {
+            setFileError(undefined);
+          }}
+        />
       </View>
     );
   }, [pdfBook]);
@@ -100,7 +111,8 @@ const PdfUpload: FC<Props> = (props) => {
           <Text style={styles.selectBtnText}>Select Pdf from your device</Text>
         )}
       </Button>
-      {pdf}
+      {fileError && <Text style={styles.pdfError}>{fileError}</Text>}
+      {!fileError && pdf}
       {bottom}
     </SafeAreaView>
   );
