@@ -4,8 +4,6 @@
 Mobile app which allows user to publish book (Audio & PDF)
 
 ![screenshoot](https://raw.githubusercontent.com/itsgratien/weread/master/src/assets/images/Screenshot_20210905-174741_Expo%20Go.jpg)
-![screnshoot](https://raw.githubusercontent.com/itsgratien/weread/master/src/assets/images/Screenshot_20210905-174505_Expo%20Go.jpg)
-![screenshoot](https://raw.githubusercontent.com/itsgratien/weread/master/src/assets/images/Screenshot_20210905-174552_Expo%20Go.jpg)
 
 
 
@@ -15,7 +13,9 @@ Mobile app which allows user to publish book (Audio & PDF)
  - ``run yarn install``
  - ``run yarn start``
 
-  
+## Other Images
+![screnshoot](https://raw.githubusercontent.com/itsgratien/weread/master/src/assets/images/Screenshot_20210905-174505_Expo%20Go.jpg)
+![screenshoot](https://raw.githubusercontent.com/itsgratien/weread/master/src/assets/images/Screenshot_20210905-174552_Expo%20Go.jpg)
 ## Authors
 
 - [@gratien](https://www.github.com/itsgratien)
